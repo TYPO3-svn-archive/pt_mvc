@@ -254,11 +254,23 @@ abstract class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 		$this->LOCAL_LANG_loaded = 1;
 	}
 
+    /**
+     * Wrapper for language label retrieval (will be isolated from tslib_pibase in the future)
+     *
+     * @param   see tx_ptmvc_controllerFrontend::pi_getLL()
+     * @return  see tx_ptmvc_controllerFrontend::pi_getLL()
+     * @author  Fabrizio Branca <mail@fabrizio-branca.de>
+     * @since   2009-03-10
+     */
+    public function getLL($key, $alt='', $hsc=FALSE) {
+        return $this->pi_getLL($key, $alt, $hsc);
+    }
 
 
 	/**
 	 * Wrapper for pi_getLL
 	 *
+	 * @deprecated use tx_ptmvc_controllerFrontend::getLL() instead
 	 * @param 	see tslib_pibase::pi_getLL()
 	 * @return 	see tslib_pibase::pi_getLL()
 	 * @author 	Fabrizio Branca <mail@fabrizio-branca.de>
