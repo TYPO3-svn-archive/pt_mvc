@@ -636,6 +636,20 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 		return $content;
 	}
 
+	
+	
+	/**
+	 * Returns the last rendered content
+	 *
+	 * @param 	void
+	 * @return 	string 	last rendered content
+	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @since	2009-03-11
+	 */
+	public function get_lastRenderedContent() {
+		return $this->lastRenderedContent;
+	}
+	
 }
 
 

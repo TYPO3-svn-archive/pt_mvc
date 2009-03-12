@@ -117,10 +117,10 @@ abstract class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
         // prefixId specific configuration for this controller found under "plugin.tx_<condensedExtKey>.controller.<controllerName>.<prefixId>."
         $prefixIdSpecificConfiguration = $this->_extConf['controller.'][$this->getControllerName().'.'][$this->prefixId.'.'];
         if (is_array($prefixIdSpecificConfiguration)) {
-        	if (TYPO3_DLOG) t3lib_div::devLog(sprintf('Found prefixId-specific configuration for prefixId "%s" in controller "%s"', $this->getControllerName(), $this->prefixId), 'pt_list', 1, $prefixIdSpecificConfiguration);
+        	if (TYPO3_DLOG) t3lib_div::devLog(sprintf('Found prefixId-specific configuration for prefixId "%s" in controller "%s"', $this->getControllerName(), $this->prefixId), 'pt_mvc', 0, $prefixIdSpecificConfiguration);
         	$this->conf = t3lib_div::array_merge_recursive_overrule($this->conf, $prefixIdSpecificConfiguration);
         } else {
-        	if (TYPO3_DLOG) t3lib_div::devLog(sprintf('Did not find prefixId-specific configuration for prefixId "%s" in controller "%s"', $this->getControllerName(), $this->prefixId), 'pt_list', 1, $prefixIdSpecificConfiguration);
+        	if (TYPO3_DLOG) t3lib_div::devLog(sprintf('Did not find prefixId-specific configuration for prefixId "%s" in controller "%s"', $this->getControllerName(), $this->prefixId), 'pt_mvc', 0, $prefixIdSpecificConfiguration);
         }
 
         // merge with flexforms
