@@ -147,18 +147,18 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
         	$this->smarty->assign('conf', t3lib_div::removeDotsFromTS($this->_extConf));
 		}
 
-        // provide some additional variables if in frontend context
+		// provide some additional variables if in frontend context
+		$presetVariables = array();
         if ($GLOBALS['TSFE'] instanceof tslib_fe) {
-	        $this->smarty->assign('currentPage', $GLOBALS['TSFE']->id);
-	        $this->smarty->assign('baseURL', $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL']);
-        	$feUserUid = ($GLOBALS['TSFE']->loginUser) ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0;
-	        $this->smarty->assign('feUserUid', $feUserUid);
+        	$presetVariables['currentPage'] = $GLOBALS['TSFE']->id; 
+        	$presetVariables['baseURL'] = $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL'];
+        	$presetVariables['feUserUid'] = ($GLOBALS['TSFE']->loginUser) ? $GLOBALS['TSFE']->fe_user->user['uid'] : 0;
         }
-
         if (is_object($this->controller) && property_exists($this->controller, 'prefixId') && !empty($this->controller->prefixId)) {
-			$this->smarty->assign('prefixId', $this->controller->prefixId);
-			$this->smarty->assign('cn', t3lib_extMgm::getCN($this->controller->extKey));
+        	$presetVariables['prefixId'] = $this->controller->prefixId;
+        	$presetVariables['cn'] = t3lib_extMgm::getCN($this->controller->extKey);
         }
+        $this->smarty->assign($presetVariables);
 
         // append individual markers before rendering the template here.
         $this->beforeRendering();
@@ -181,24 +181,19 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 		// render!
 		$output = $this->smarty->fetch('file:'.$this->templateFilePath);
 
-		// some post-processing...
+		// post-processing: reuse the variables as markers to replace
 		$replace = array();
-
-		// replace some "magic markers" if in frontend context
-		if ($GLOBALS['TSFE'] instanceof tslib_fe) {
-			$replace['###CURRENTPAGE###'] = $GLOBALS['TSFE']->id;
-			$replace['###BASEURL###'] = $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL'];
-			$replace['###FEUSERUID###'] = $feUserUid;
+		foreach ($presetVariables as $key => $value) {
+			$replace['###' . strtoupper($key) . '###'] = $value;
 		}
-
-		if (is_object($this->controller) && property_exists($this->controller, 'prefixId') && !empty($this->controller->prefixId)) {
-			$replace['###PREFIXID###'] = $this->controller->prefixId;
-			$replace['###CN###'] = t3lib_extMgm::getCN($this->controller->extKey);
-        }
-
         $output = str_replace(array_keys($replace), array_values($replace), $output);
 
         $output = $this->afterRendering($output);
+        
+        // stdWrap
+        if (($GLOBALS['TSFE'] instanceof tslib_fe) && ($GLOBALS['TSFE']->cObj instanceof tslib_cObj)) {
+        	$output = $GLOBALS['TSFE']->cObj->stdWrap($output, $this->viewConf['outputWrap.']);
+        }
 
 		return $output;
 	}
