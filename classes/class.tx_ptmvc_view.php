@@ -300,7 +300,12 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 				 *     View_Name: <templateBasePath>/View/Name.tpl
 				 */
 				$nameParts = t3lib_div::trimExplode('_', $this->getViewName());
-				$this->templateFilePath = $templateBasePath . implode('/', array_slice($nameParts, 0 ,-1)) . '/' . $this->getViewName() . '.tpl';
+				$this->templateFilePath = $templateBasePath;
+				if (count($nameParts) > 1) {
+					$this->templateFilePath .= implode('/', array_slice($nameParts, 0 ,-1));
+				}
+				$this->templateFilePath .= '/' . $this->getViewName() . '.tpl';
+				
 				$this->templateFilePath = t3lib_div::getFileAbsFileName($this->templateFilePath);
 				$pathSource = 'Auto-generated';
 			}
