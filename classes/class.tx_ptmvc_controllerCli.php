@@ -34,7 +34,7 @@ require_once 'Console/Color.php';
 /**
  * Base class for all cli controller classes with some initialization and a controller
  *
- * @version 	$Id: class.tx_ptmvc_controllerCli.php,v 1.8 2008/11/11 11:22:19 ry44 Exp $
+ * @version 	$Id$
  * @author		Fabrizio Branca <branca@punkt.de>
  * @package		TYPO3
  * @subpackage	pt_mvc

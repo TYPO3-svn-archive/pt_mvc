@@ -24,7 +24,7 @@
 /**
  * Base class for all controller classes with some initialization and a controller
  *
- * @version $Id: class.tx_ptmvc_controller.php,v 1.28 2009/03/09 11:10:33 ry44 Exp $
+ * @version $Id$
  * @author	Fabrizio Branca <branca@punkt.de>
  * @package	TYPO3
  * @subpackage pt_mvc

@@ -24,7 +24,7 @@
 /**
  * Base class for views
  *
- * @version	$Id: class.tx_ptmvc_view.php,v 1.19 2009/03/02 07:35:01 ry44 Exp $
+ * @version	$Id$
  * @package TYPO3
  * @subpackage pt_mvc
  * @author	Fabrizio Branca <branca@punkt.de>

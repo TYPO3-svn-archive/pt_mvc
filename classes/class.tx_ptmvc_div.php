@@ -27,7 +27,7 @@ require_once PATH_t3lib . 'class.t3lib_tstemplate.php';
 /**
  * Some stativ function
  *
- * @version $Id: class.tx_ptmvc_div.php,v 1.5 2009/02/27 16:19:11 ry44 Exp $
+ * @version $Id$
  * @author	Fabrizio Branca <branca@punkt.de>
  * @package	TYPO3
  * @subpackage pt_mvc

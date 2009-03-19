@@ -28,7 +28,7 @@ require_once t3lib_extMgm::extPath('pt_mvc').'classes/class.tx_ptmvc_controller.
 /**
  * Base class for all backend controller classes with some initialization and a controller
  *
- * @version 	$Id: class.tx_ptmvc_controllerBackend.php,v 1.2 2008/10/25 21:41:07 ry44 Exp $
+ * @version 	$Id$
  * @author		Fabrizio Branca <branca@punkt.de>
  * @package		TYPO3
  * @subpackage	pt_mvc

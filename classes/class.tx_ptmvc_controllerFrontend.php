@@ -28,7 +28,7 @@ require_once t3lib_extMgm::extPath('pt_tools').'res/staticlib/class.tx_pttools_d
 /**
  * Base class for all frontend controller classes
  *
- * @version 	$Id: class.tx_ptmvc_controllerFrontend.php,v 1.19 2009/03/02 07:35:01 ry44 Exp $
+ * @version 	$Id$
  * @author		Fabrizio Branca <branca@punkt.de>
  * @package		TYPO3
  * @subpackage	pt_mvc

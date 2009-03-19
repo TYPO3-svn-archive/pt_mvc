@@ -28,7 +28,7 @@ require_once t3lib_extMgm::extPath('pt_mvc').'classes/class.tx_ptmvc_controller.
 /**
  * Base class for all eid controller classes with some initialization and a controller
  *
- * @version 	$Id: class.tx_ptmvc_controllerEid.php,v 1.7 2008/11/14 09:23:14 ry44 Exp $
+ * @version 	$Id$
  * @author		Fabrizio Branca <branca@punkt.de>
  * @package		TYPO3
  * @subpackage	pt_mvc
