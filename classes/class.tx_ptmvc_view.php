@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008 Fabrizio Branca (branca@punkt.de)
+*  (c) 2008 Fabrizio Branca (mail@fabrizio-branca.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -27,7 +27,7 @@
  * @version	$Id$
  * @package TYPO3
  * @subpackage pt_mvc
- * @author	Fabrizio Branca <branca@punkt.de>
+ * @author	Fabrizio Branca <mail@fabrizio-branca.de>
  * @since	2008-10-16
  */
 
@@ -41,7 +41,7 @@ require_once t3lib_extMgm::extPath('pt_tools').'res/abstract/class.tx_pttools_iT
 /**
  * Base class for views
  *
- * @author	Fabrizio Branca <branca@punkt.de>
+ * @author	Fabrizio Branca <mail@fabrizio-branca.de>
  * @since	2008-10-16
  * @package TYPO3
  * @subpackage pt_mvc
@@ -104,7 +104,7 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 	 *
 	 * @param	object|NULL	(optional) reference to the calling controller
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-18
 	 */
 	public function __construct($controller = NULL) {
@@ -135,7 +135,7 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 	 *
 	 * @param 	void
 	 * @return 	string	HTML output
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-10
 	 */
 	public function render() {
@@ -206,7 +206,7 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 	 *
 	 * @param 	void
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2009-01-19
 	 */
 	public function beforeRendering() {
@@ -218,7 +218,7 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 	 *
 	 * @param 	string	rendered view output
 	 * @return 	string	rendered view output
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2009-01-19
 	 */
 	public function afterRendering($output) {
@@ -231,7 +231,7 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 	 *
 	 * @param 	array	smartyLocalConfiguration
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-11-06
 	 */
 	public function set_smartyLocalConfiguration(array $smartyLocalConfiguration) {
@@ -244,7 +244,7 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 	 * Returns the name of the view (all parts after tx_<condensedExtKey>_view_)
 	 *
 	 * @return 	string	view name
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-10
 	 */
 	public function getViewName() {
@@ -262,7 +262,7 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 	 *
 	 * @param 	void
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2009-02-15
 	 */
 	public function getTemplateFilePath() {
@@ -323,7 +323,7 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 	 *
 	 * @param 	void
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2009-02-27
 	 */
 	protected function getConfiguration() {
@@ -357,7 +357,7 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 	 *
 	 * @param 	mixed	item to add to the collection
 	 * @param 	int		(optional) id
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2009-02-02
 	 */
 	public function addItem($itemObj, $id=0) {

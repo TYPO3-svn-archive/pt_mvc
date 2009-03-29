@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008 Fabrizio Branca <branca@punkt.de>
+*  (c) 2008 Fabrizio Branca <mail@fabrizio-branca.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -35,7 +35,7 @@ require_once 'Console/Color.php';
  * Base class for all cli controller classes with some initialization and a controller
  *
  * @version 	$Id$
- * @author		Fabrizio Branca <branca@punkt.de>
+ * @author		Fabrizio Branca <mail@fabrizio-branca.de>
  * @package		TYPO3
  * @subpackage	pt_mvc
  */
@@ -87,7 +87,7 @@ abstract class tx_ptmvc_controllerCli extends tx_ptmvc_controller {
 	 * Constructor (disable output buffering)
 	 * 
 	 * @param 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-11-10
 	 */
 	public function __construct() {
@@ -103,7 +103,7 @@ abstract class tx_ptmvc_controllerCli extends tx_ptmvc_controller {
 	 * 
 	 * @param 	Console_CommandLine
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-25
 	 */
 	public function setCommandLineParser(Console_CommandLine $parser) {
@@ -152,7 +152,7 @@ abstract class tx_ptmvc_controllerCli extends tx_ptmvc_controller {
 	 *
 	 * @param	void
 	 * @return 	string	action
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-25
 	 */
 	public function getAction() {
@@ -166,7 +166,7 @@ abstract class tx_ptmvc_controllerCli extends tx_ptmvc_controller {
 	 *
 	 * @param	Exception 	exception
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-26
 	 */
 	protected function outputException(Exception $excObj) {
@@ -190,7 +190,7 @@ abstract class tx_ptmvc_controllerCli extends tx_ptmvc_controller {
 	 * @param 	bool			(optional) true to add end of line, default: true
 	 * @param 	vool			(optional) force output even if non in verbose mode
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-26
 	 */
 	protected function stdout($msg, $addEol = true, $forceOutput = false) {
@@ -218,7 +218,7 @@ abstract class tx_ptmvc_controllerCli extends tx_ptmvc_controller {
 	 * @param 	string|array	message
 	 * @param 	bool	(optional) true to add end of line, default: true
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-26
 	 */
 	protected function stderr($msg, $addEol = true) {
@@ -243,7 +243,7 @@ abstract class tx_ptmvc_controllerCli extends tx_ptmvc_controller {
 	 * 
 	 * @param 	void
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-11-10
 	 */
 	protected function clear() {
@@ -263,7 +263,7 @@ abstract class tx_ptmvc_controllerCli extends tx_ptmvc_controller {
 	 * 
 	 * @param 	void
 	 * @return 	voi
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-25
 	 */
 	protected function defaultAction() {

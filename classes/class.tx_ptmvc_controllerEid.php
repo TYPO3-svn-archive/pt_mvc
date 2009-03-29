@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008 Fabrizio Branca <branca@punkt.de>
+*  (c) 2008 Fabrizio Branca <mail@fabrizio-branca.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -29,7 +29,7 @@ require_once t3lib_extMgm::extPath('pt_mvc').'classes/class.tx_ptmvc_controller.
  * Base class for all eid controller classes with some initialization and a controller
  *
  * @version 	$Id$
- * @author		Fabrizio Branca <branca@punkt.de>
+ * @author		Fabrizio Branca <mail@fabrizio-branca.de>
  * @package		TYPO3
  * @subpackage	pt_mvc
  */
@@ -41,7 +41,7 @@ abstract class tx_ptmvc_controllerEid extends tx_ptmvc_controller {
 	 * 
 	 * @param 	void
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-23
 	 */
 	protected function getParameters() {
@@ -65,7 +65,7 @@ abstract class tx_ptmvc_controllerEid extends tx_ptmvc_controller {
 	 *
 	 * @param 	Exception $excObj
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-15
 	 */
 	protected function outputException(Exception $excObj) {

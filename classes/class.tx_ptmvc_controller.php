@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008 Fabrizio Branca <branca@punkt.de>
+*  (c) 2008 Fabrizio Branca <mail@fabrizio-branca.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,7 +25,7 @@
  * Base class for all controller classes with some initialization and a controller
  *
  * @version $Id$
- * @author	Fabrizio Branca <branca@punkt.de>
+ * @author	Fabrizio Branca <mail@fabrizio-branca.de>
  * @package	TYPO3
  * @subpackage pt_mvc
  */
@@ -52,7 +52,7 @@ require_once t3lib_extMgm::extPath('pt_mvc').'classes/class.tx_ptmvc_div.php';
 /**
  * Base class for all controller classes with some initialization and a controller
  *
- * @author	Fabrizio Branca <branca@punkt.de>
+ * @author	Fabrizio Branca <mail@fabrizio-branca.de>
  * @since 	2008-10-10
  * @package TYPO3
  * @subpackage pt_mvc
@@ -151,7 +151,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * Constructor
 	 * extKey, prefixId and scriptRelPath will be set here
 	 *
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-25
 	 */
 	public function __construct() {
@@ -187,7 +187,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param	void
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-23
 	 */
 	protected function bootstrap() {
@@ -216,7 +216,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param 	void
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2009-02-01
 	 */
 	protected function getConfiguration() {
@@ -239,7 +239,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param	void
 	 * @return	array	configuration array
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2009-02-18
 	 */
 	public function get_conf() {
@@ -253,7 +253,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param 	void
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-23
 	 */
 	protected function getPluginMode() {
@@ -267,7 +267,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param 	void
 	 * @return 	string 	prefixId
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2009-01-20
 	 */
 	protected function getPrefixId() {
@@ -281,7 +281,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param 	void
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-17
 	 */
 	protected function init() {
@@ -294,7 +294,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param 	void
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-31
 	 */
 	protected function beforeExit() {
@@ -307,7 +307,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param	void
 	 * @return 	void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-12-02
 	 */
 	public function prepare() {
@@ -340,7 +340,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * @param 	string		(optional) content 
 	 * @param 	array		(optional) configuration
 	 * @return	string		HTML output
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-17
 	 */
 	public function main($content='', array $conf=array())	{
@@ -392,7 +392,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param Exception $excObj
 	 * @return void
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-15
 	 */
 	protected function outputException(Exception $excObj) {
@@ -422,7 +422,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param	void
 	 * @return 	string	action
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-23
 	 */
 	protected function getAction() {
@@ -436,7 +436,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param 	void
 	 * @return 	int		exit status, 0 is success
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-16
 	 */
 	public function get_exitstatus() {
@@ -450,7 +450,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param 	string	(optional) name of the view, if empty: <controllername>_default
 	 * @return 	tx_ptmvc_view
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-10
 	 */
 	public function getView($viewName = '') {
@@ -494,7 +494,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * Returns the name of the controller (all parts after tx_<condensedExtKey>_controller_)
 	 *
 	 * @return 	string	controller name
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-10
 	 */
 	public function getControllerName() {
@@ -512,7 +512,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param 	string	action method name
 	 * @return 	int		0 = no action found; 'class' = local action; 'hook' = action found in hook; 'hook_prefixId' = prefixId-specific hook
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-16
 	 */
 	protected function actionMethodExists($actionMethodName) {
@@ -536,7 +536,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * @param 	array	(optional) additional parameters to be passed to the action
 	 * @return 	string	HTML Output
 	 * @throws	tx_pttools_exception if action empty or no matching method is found
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-08
 	 */
 	public function doAction($action = '', array $parameter = array()) {
@@ -587,7 +587,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * @param 	array	(optional) array of paramters to pass to the called method
 	 * @return 	mixed	return of the called method
 	 * @throws	tx_pttools_exception if action empty or no matching method is found
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-08
 	 */
 	protected function callMethod($methodName, array $parameter = array()) {
@@ -643,7 +643,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 *
 	 * @param 	void
 	 * @return 	string 	last rendered content
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2009-03-11
 	 */
 	public function get_lastRenderedContent() {

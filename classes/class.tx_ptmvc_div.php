@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008 Fabrizio Branca (branca@punkt.de)
+*  (c) 2008 Fabrizio Branca (mail@fabrizio-branca.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,7 +28,7 @@ require_once PATH_t3lib . 'class.t3lib_tstemplate.php';
  * Some stativ function
  *
  * @version $Id$
- * @author	Fabrizio Branca <branca@punkt.de>
+ * @author	Fabrizio Branca <mail@fabrizio-branca.de>
  * @package	TYPO3
  * @subpackage pt_mvc
  */
@@ -47,7 +47,7 @@ class tx_ptmvc_div {
 	 * @param 	string	condensedExtKey
 	 * @return 	mixed	full_extKey or false if no extKey found
 	 * @throws	tx_pttools_exception if no extension can be found
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-09
 	 */
 	public static function getExtKeyFromCondensendExtKey($condensedExtKey) {
@@ -76,7 +76,7 @@ class tx_ptmvc_div {
 	 *
 	 * @param 	string	class name
 	 * @return 	string 	condensed extension key
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-05-27
 	 */
 	public static function getCondensedExtKeyFromClassName($className) {
@@ -93,7 +93,7 @@ class tx_ptmvc_div {
 	 * @param 	string	(optional) if a key is set not the whole configuration is returned, but only this key
 	 * @return 	array|mixed	the whole configuration or only a single key
 	 * @throws	tx_pttools_exceptionAssertion if the configuration or the given key is not found
-	 * @author	Fabrizio Branca <branca@punkt.de>
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-25
 	 */
 	public static function getExtensionInfo($_EXTKEY, $key = '') {
