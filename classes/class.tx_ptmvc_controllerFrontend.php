@@ -33,7 +33,7 @@ require_once t3lib_extMgm::extPath('pt_tools').'res/staticlib/class.tx_pttools_d
  * @package		TYPO3
  * @subpackage	pt_mvc
  */
-abstract class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
+class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 
 	/**
 	 * @var tslib_cObj	the current cObj will be stored here, when running as a frontend plugin
