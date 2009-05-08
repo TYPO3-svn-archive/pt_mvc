@@ -37,6 +37,7 @@
 require_once t3lib_extMgm::extPath('pt_mvc').'classes/class.tx_ptmvc_div.php';
 require_once t3lib_extMgm::extPath('pt_tools').'res/objects/class.tx_pttools_smartyAdapter.php';
 require_once t3lib_extMgm::extPath('pt_tools').'res/abstract/class.tx_pttools_iTemplateable.php';
+require_once t3lib_extMgm::extPath('pt_tools').'res/staticlib/class.tx_pttools_div.php';
 
 /**
  * Base class for views
@@ -348,27 +349,50 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 
 
 
-	/**
-	 * Overrides the collection's addItem method to make sure that only
-	 * - scalar values,
-	 * - arrays or
-	 * - objects implemeting the tx_pttools_iTemplateable or the ArrayAccess interface (tx_pttools_iTemplateable will be checked first)
-	 * can be added to the collection
-	 *
-	 * @param 	mixed	item to add to the collection
-	 * @param 	int		(optional) id
-	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
-	 * @since	2009-02-02
-	 */
-	public function addItem($itemObj, $id=0) {
-		if ($itemObj instanceof tx_pttools_iTemplateable) {
-			parent::addItem($itemObj->getMarkerArray(), $id);
-		} elseif (empty($itemObj) || is_scalar($itemObj) || is_array($itemObj) || ($itemObj instanceof ArrayAccess)) {
-			parent::addItem($itemObj, $id);
-		} else {
-			throw new tx_pttools_exception('Item not allowed!');
-		}
-	}
+    /**
+     * Overrides the collection's addItem method to make sure that only
+     * - scalar values,
+     * - arrays or
+     * - objects implemeting the tx_pttools_iTemplateable or the ArrayAccess interface (tx_pttools_iTemplateable will be checked first)
+     * can be added to the collection
+     *
+     * @param   mixed   item to add to the collection
+     * @param   int     (optional) id
+     * @param   boolean flag whether HTML should be filtered from the items values to prevent XSS when displaying the markers within a HTML page
+     * @author  Fabrizio Branca <mail@fabrizio-branca.de>, Rainer Kuhn <kuhn@punkt.de>
+     * @since   2009-02-02, extended for HTML filtering by default 2009-05-08
+     */
+    public function addItem($itemObj, $id=0, $filterHtml=true) {
+        
+        // if no HTML filtering requested: add items directly
+        if ($filterHtml == false) {
+            if ($itemObj instanceof tx_pttools_iTemplateable) {
+                parent::addItem($itemObj->getMarkerArray(), $id);
+            } elseif (empty($itemObj) || is_scalar($itemObj) || is_array($itemObj) || ($itemObj instanceof ArrayAccess)) {
+                parent::addItem($itemObj, $id);
+            } else {
+                throw new tx_pttools_exception('Item not allowed!');
+            }
+        
+        // default: filter HTML code to prevent XSS when displaying the markers within a HTML page
+        } else {
+            if ($itemObj instanceof tx_pttools_iTemplateable) {
+                parent::addItem(tx_pttools_div::htmlOutputArray($itemObj->getMarkerArray()), $id);
+            } elseif (empty($itemObj)) {
+                parent::addItem($itemObj, $id);
+            } elseif (is_scalar($itemObj)) {
+                parent::addItem(tx_pttools_div::htmlOutput($itemObj), $id);
+            } elseif (is_array($itemObj)) {
+                parent::addItem(tx_pttools_div::htmlOutputArray($itemObj), $id);
+            } elseif ($itemObj instanceof ArrayAccess) {
+                parent::addItem(tx_pttools_div::htmlOutputArrayAccess($itemObj), $id);
+            } else {
+                throw new tx_pttools_exception('Item not allowed!');
+            }
+            
+        }
+        
+    }
 
 
 

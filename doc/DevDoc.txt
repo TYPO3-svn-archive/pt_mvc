@@ -1,0 +1,26 @@
+********************************************************************************
+DevDoc.txt: Development notes for EXT pt_mvc
+Author: Fabrizio Branca, Rainer Kuhn, et. al.
+
+Legend:
+
+FIX: fixes a bug
+CHG: inform about changed items
+ADD: added feature
+RMV: removed Item
+RFT: refactoring / code cleanup
+********************************************************************************
+
+
+ToDo: As of 08.05.2009
+====
+
+
+v0.0.2dev:
+---------
++ (rk) CHG: added default XSS prevention to MVC views ***** IMPORTANT: this may result in unwanted effects for existing code, check and adapt your implemented calls of tx_ptmvc_view::addItem()! *****
+  + tx_ptmvc_view::addItem(): added new optional param $filterHtml with default TRUE(!) and appropriate HTML filtering functionality
+  + ext_emconf.php: raised pt_tools dependency to version "0.4.2-", raised pt_mvc version to "0.0.2dev"
++ (rk) ADD: DevDoc.txt: added this file
+
+
