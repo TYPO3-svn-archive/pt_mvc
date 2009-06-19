@@ -75,6 +75,10 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 		} else {
 			$this->params = t3lib_div::array_merge_recursive_overrule(t3lib_div::_POST(), t3lib_div::_GET());
 		}
+		
+		if (!empty($this->conf['prefixId_alternative'])) {
+			$this->params = t3lib_div::array_merge_recursive_overrule($this->params, t3lib_div::GParrayMerged($this->conf['prefixId_alternative']));
+		}
 
 		// kept for backwards compatibility (this is needed as long the controller class inherits from tslib_pibase and pi_* methods are used
 		$this->piVars =& $this->params;
