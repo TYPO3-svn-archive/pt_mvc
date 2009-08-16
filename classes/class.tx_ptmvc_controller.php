@@ -511,12 +511,12 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * Checks if the action method exists locally or in a hook. Actions defined in a hook take priority over local defined actions
 	 *
 	 * @param 	string	action method name
-	 * @return 	int		0 = no action found; 'class' = local action; 'hook' = action found in hook; 'hook_prefixId' = prefixId-specific hook
+	 * @return 	string		'notfound' = no action found; 'class' = local action; 'hook' = action found in hook; 'hook_prefixId' = prefixId-specific hook
 	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-16
 	 */
 	protected function actionMethodExists($actionMethodName) {
-		$result = 0;
+		$result = 'notfound';
 		if (!empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['pt_mvc']['controller_actions'][$this->getControllerName()][$this->prefixId][$actionMethodName])) {
 			$result = 'hook_prefixId';
 		} elseif (!empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['pt_mvc']['controller_actions'][$this->getControllerName()][$actionMethodName])) {
@@ -627,6 +627,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 			} break;
 
 			case 0:
+			case 'notfound':
 			// break left out intentionally
 			default: {
 				throw new tx_pttools_exception(sprintf('Method "%s" not found for controller "%s"', $methodName, $this->getControllerName()));

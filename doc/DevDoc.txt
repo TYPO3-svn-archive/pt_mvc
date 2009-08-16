@@ -12,12 +12,15 @@ RFT: refactoring / code cleanup
 ********************************************************************************
 
 
-ToDo: As of 20.06.2009
+ToDo: As of 16.08.2009
 ====
 
 
 v0.0.2dev:
 ---------
++ (fb) ADD: made actionMethodExists() return "notfound" instead of 0 if a action method could not be found.
+	   0 resulted in errors during a later switch statement that resulted in returning an empty content
+	   when calling an illegal action instead of throw an exception.
 + (fb) ADD: added "prefixId_alternative" configuration parameter that defines an alternative namespace.
   This feature is useful if you want to share a namespace across multiple controllers.
   E.g. if you want a form to be processed by many controllers.
