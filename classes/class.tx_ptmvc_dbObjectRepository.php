@@ -3,12 +3,15 @@
 require_once t3lib_extMgm::extPath('pt_mvc').'classes/class.tx_ptmvc_dbObjectCollection.php';
 
 /**
- * Base class for object repositories
+ * Base class for object repositories.
+ * This class is intended to be extended by concrete repositories. Set the properties
+ * tableName and className (and collectionClassName) in your inheriting class.
+ * However, this class can also be used as it is, when passing those parameters to the class constructor.
  *
  * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
  * @since 2009-09-15
  */
-abstract class tx_ptmvc_dbObjectRepository {
+class tx_ptmvc_dbObjectRepository {
 
 	/**
 	 * @var string
@@ -33,9 +36,20 @@ abstract class tx_ptmvc_dbObjectRepository {
 	/**
 	 * Constructor
 	 *
-	 * @param void
+	 * @param string table name (optional)
+	 * @param string class name (optional)
+	 * @param string collection class name (optional)
 	 */
-    public function __construct() {
+    public function __construct($tableName=NULL, $className=NULL, $collectionClassName=NULL) {
+    	if (!is_null($tableName)) {
+    		$this->tableName = $tableName;
+    	}
+    	if (!is_null($className)) {
+    		$this->className = $className;
+    	}
+    	if (!is_null($collectionClassName)) {
+    		$this->collectionClassName = $collectionClassName;
+    	}
 		tx_pttools_assert::isNotEmptyString($this->tableName, array('message' => 'No table name set!'));
 		tx_pttools_assert::isNotEmptyString($this->className, array('message' => 'No class name set!'));
 		tx_pttools_assert::isNotEmptyString($this->collectionClassName, array('message' => 'No collection class name set!'));
@@ -130,10 +144,10 @@ abstract class tx_ptmvc_dbObjectRepository {
         $this->dbObj->sql_free_result($res);
         return $collection;
 	}
-	
+
 	/**
 	 * Create an empty object collection
-	 * 
+	 *
 	 * @param void
 	 * @return tx_pttools_objectCollection
 	 */

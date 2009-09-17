@@ -18,6 +18,7 @@ ToDo: As of 17.09.2009
 
 v0.0.2dev:
 ---------
++ (fb) CHG: tx_ptmvc_dbObjectRepository is not abstract anymore and can be used directly as a generec repository
 + (fb) ADD: added generic (and very basic/simple) classes for the "M" in MVC. (DDD-approach instead of active record appreach. That means: No accessors, but repositories!)
        + class.tx_ptmvc_dbObject.php
        + class.tx_ptmvc_dbObjectCollection.php
