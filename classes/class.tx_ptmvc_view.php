@@ -57,7 +57,7 @@ abstract class tx_ptmvc_view extends tx_pttools_collection {
 	/**
 	 * @var string	path to the language file
 	 */
-	protected $lanuageFilePath;
+	protected $languageFilePath;
 
 	/**
 	 * @var tx_smarty_wrapper

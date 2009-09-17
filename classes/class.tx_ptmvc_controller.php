@@ -63,9 +63,20 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
     const FAILURE_EXIT   = 1;
     const EXCEPTION_EXIT = 2;
 
-	public $prefixId      = NULL;	// usually same as class name
-	public $scriptRelPath = NULL;	// Path to this script relative to the extension dir.
-	public $extKey        = NULL;	// The extension key.
+    /**
+     * @var string prefix Id (equals class name by default)
+     */
+	public $prefixId = NULL;
+	
+	/**
+	 * @var string script path (will be populated automatically with controller path by convention. See manual)
+	 */
+	public $scriptRelPath = NULL;
+	
+	/**
+	 * @var string extension key (will be extracted automatically from the class name)
+	 */
+	public $extKey = NULL;
 
 
 	/**
@@ -109,7 +120,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * @var array	controller configuration
 	 */
 	public $conf = array();
-	
+
 	/**
 	 * @var array	configuration passed to the main() method
 	 */
@@ -139,7 +150,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
      * @var string	stores the last rendered content
      */
     protected $lastRenderedContent;
-    
+
     /**
      * @var string	content passed by the main function (nut used for now)
      */
@@ -221,7 +232,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 */
 	protected function getConfiguration() {
 
-		// Extension manager configuration 
+		// Extension manager configuration
 		$this->_emConf = tx_pttools_div::returnExtConfArray($this->extKey, true);
 
 		// Extension configuration (set this in your inheriting class)
@@ -317,7 +328,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 
 		// getting the configuration
 		$this->getConfiguration();
-		
+
 		// merge local configuration over existing
 		$this->conf = t3lib_div::array_merge_recursive_overrule($this->conf, $this->localConfiguration);
 
@@ -337,7 +348,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	/**
 	 * The main method of the plugin
 	 *
-	 * @param 	string		(optional) content 
+	 * @param 	string		(optional) content
 	 * @param 	array		(optional) configuration
 	 * @return	string		HTML output
 	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
@@ -346,7 +357,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	public function main($content='', array $conf=array())	{
 
 		try {
-			
+
 			$this->content = $content;
 			if (!empty($conf)) {
                 $this->localConfiguration = t3lib_div::array_merge_recursive_overrule($this->localConfiguration, $conf);
@@ -428,7 +439,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	protected function getAction() {
 		return $this->params['action'];
 	}
-	
+
 
 
 	/**
@@ -637,8 +648,8 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 		return $content;
 	}
 
-	
-	
+
+
 	/**
 	 * Returns the last rendered content
 	 *
@@ -650,7 +661,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	public function get_lastRenderedContent() {
 		return $this->lastRenderedContent;
 	}
-	
+
 }
 
 
