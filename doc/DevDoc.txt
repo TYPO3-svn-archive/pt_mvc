@@ -12,12 +12,16 @@ RFT: refactoring / code cleanup
 ********************************************************************************
 
 
-ToDo: As of 16.08.2009
+ToDo: As of 17.09.2009
 ====
 
 
 v0.0.2dev:
 ---------
++ (fb) ADD: added generic (and very basic/simple) classes for the "M" in MVC. (DDD-approach instead of active record appreach. That means: No accessors, but repositories!)
+       + class.tx_ptmvc_dbObject.php
+       + class.tx_ptmvc_dbObjectCollection.php
+       + class.tx_ptmvc_dbObjectRepository.php
 + (fb) ADD: made actionMethodExists() return "notfound" instead of 0 if a action method could not be found.
 	   0 resulted in errors during a later switch statement that resulted in returning an empty content
 	   when calling an illegal action instead of throw an exception.
