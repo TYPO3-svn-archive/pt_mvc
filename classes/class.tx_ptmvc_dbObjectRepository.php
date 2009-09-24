@@ -1,6 +1,7 @@
 <?php
 
 require_once t3lib_extMgm::extPath('pt_mvc').'classes/class.tx_ptmvc_dbObjectCollection.php';
+require_once t3lib_extMgm::extPath('pt_tools').'res/staticlib/class.tx_pttools_div.php';
 
 /**
  * Base class for object repositories.
@@ -32,6 +33,11 @@ class tx_ptmvc_dbObjectRepository {
 	 * @var t3lib_DB
 	 */
 	protected $dbObj = NULL;
+
+	/**
+	 * @var int|string storage pid or alias, if this is set new records will be stored here
+	 */
+	protected $storagePid = NULL;
 
 	/**
 	 * Constructor
@@ -94,6 +100,9 @@ class tx_ptmvc_dbObjectRepository {
 			tx_pttools_assert::isMySQLRessource($res, $this->dbObj);
 		} else {
 			// inserting
+		    if (empty($values['pid']) && !is_null($this->storagePid)) {
+		        $values['pid'] = tx_pttools_div::getPid($this->storagePid);
+		    }
 			$res = $this->dbObj->exec_INSERTquery($this->tableName, $values);
 			tx_pttools_assert::isMySQLRessource($res, $this->dbObj);
 
@@ -117,18 +126,22 @@ class tx_ptmvc_dbObjectRepository {
 	/**
 	 * Returns all objects of this repository.
 	 *
-	 * @param void
+	 * @param string (optional) where clause
+	 * @param string (optional) order by clause
+	 * @param string (optional) limit clause
+	 * @param bool (optional) ignore enable fields
 	 * @return tx_pttools_objectCollection An collection of objects, empty if no objects found
 	 */
-	public function findAll($where='1=1') {
+	public function findAll($where='', $orderBy='', $limit='', $ignoreEnableFields=false) {
 		$collection = $this->createEmptyCollection();
 
         $select  = '*';
         $from    = $this->tableName;
-        $where  .= tx_pttools_div::enableFields($this->tableName);
+        $where = empty($where) ? '1=1' : $where;
+        if (!$ignoreEnableFields) {
+        	$where  .= tx_pttools_div::enableFields($this->tableName);
+        }
         $groupBy = '';
-        $orderBy = '';
-        $limit   = '';
 
         $res = $this->dbObj->exec_SELECTquery($select, $from, $where, $groupBy, $orderBy, $limit);
         tx_pttools_assert::isMySQLRessource($res, $this->dbObj);
@@ -143,6 +156,21 @@ class tx_ptmvc_dbObjectRepository {
 
         $this->dbObj->sql_free_result($res);
         return $collection;
+	}
+
+	/**
+	 * Returns all objects of this repository in a given pid
+	 *
+	 * @param int pid
+	 * @param string (optional) where clause
+	 * @param string (optional) order by clause
+	 * @param string (optional) limit clause
+	 * @param bool (optional) ignore enable fields
+	 * @return tx_pttools_objectCollection An collection of objects, empty if no objects found
+	 */
+	public function findAllInPid($pid, $where='', $orderBy='', $limit='', $ignoreEnableFields=false) {
+	    $where = empty($where) ? '1=1' : $where;
+	    return $this->findAll('pid='.intval($pid) .' AND '.$where, $orderBy, $limit, $ignoreEnableFields);
 	}
 
 	/**
