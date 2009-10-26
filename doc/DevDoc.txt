@@ -12,12 +12,17 @@ RFT: refactoring / code cleanup
 ********************************************************************************
 
 
-ToDo: As of 17.09.2009
+ToDo: As of 26.10.2009
 ====
 
+0.0.3dev:
+--------
 
-v0.0.2dev:
----------
+
+
+
+v0.0.2:  [used for online project 26.10.09]
+------
 + (fb) ADD: added storagePid feature for tx_ptmvc_dbObjectRepository and some minor other changes
 + (fb) CHG: tx_ptmvc_dbObjectRepository is not abstract anymore and can be used directly as a generec repository
 + (fb) ADD: added generic (and very basic/simple) classes for the "M" in MVC. (DDD-approach instead of active record appreach. That means: No accessors, but repositories!)
