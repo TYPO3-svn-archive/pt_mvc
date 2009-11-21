@@ -14,12 +14,17 @@ RFT: refactoring / code cleanup
 
 ToDo: As of 26.10.2009
 ====
-
++ Support cached controllers
+  
 0.0.3dev:
 --------
-
-
-
++ (fb) ADD: Kickstarter support for creating
+       + controller classes
+       + view classes
+       + typoscript configuration files
+       + smarty templates
+       CHG: Updated the manual describing the new kickstarter features.
+       ADD: added suggest in ext_emconf to use the kickstarter and the tcaobjects extensions 
 
 v0.0.2:  [used for online project 26.10.09]
 ------

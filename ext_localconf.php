@@ -12,4 +12,12 @@ if (t3lib_extMgm::isLoaded('tcaobjects')) {
 	);
 }
 
+$TYPO3_CONF_VARS['EXTCONF']['kickstarter']['sections']['ptmvccontroller'] = array(
+	'classname'   => 'tx_ptmvc_kickstarter_section_controller',
+	'filepath'    => 'EXT:pt_mvc/sections/class.tx_ptmvc_kickstarter_section_controller.php',
+	'title'       => 'Create pt_mvc controller',
+	'description' => 'Create pt_mvc controller classes',
+	'singleItem'  => '',
+);
+
 ?>

@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'MVC Base',
-	'description' => 'Base classes for a mvc extension',
+	'description' => 'Base classes for mvc extensions',
 	'category' => 'misc',
 	'author' => 'Fabrizio Branca',
 	'author_email' => 'mail@fabrizio-branca.de',
@@ -38,6 +38,8 @@ $EM_CONF[$_EXTKEY] = array(
 		'conflicts' => array(
 		),
 		'suggests' => array(
+			'kickstarter' => '0.4.0-',
+			'tcaobjects' => '',
 			'If tx_ptmvc_controllerCli is used: PEAR Console_CommandLine (THIS IS JUST A HINT, please ignore if your server is correctly configured)' => '',
 			'If tx_ptmvc_controllerCli is used: PEAR Console_Color (THIS IS JUST A HINT, please ignore if your server is correctly configured)' => '',
 		),
