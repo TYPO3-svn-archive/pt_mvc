@@ -71,7 +71,11 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 	protected function getParameters() {
 		// simply gets all post and get parameters prefixed with the controllers prefixId
 		if (!empty($this->prefixId)) {
-			$this->params = t3lib_div::GParrayMerged($this->prefixId);
+			if (t3lib_div::compat_version('4.3')) {
+				$this->params = t3lib_div::_GPmerged($this->prefixId);	
+			} else {
+				$this->params = t3lib_div::GParrayMerged($this->prefixId);	
+			}
 		} else {
 			$this->params = t3lib_div::array_merge_recursive_overrule(t3lib_div::_POST(), t3lib_div::_GET());
 		}
