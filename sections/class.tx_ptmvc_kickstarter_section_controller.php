@@ -126,7 +126,7 @@ class tx_ptmvc_kickstarter_section_controller extends tx_kickstarter_sectionbase
 			// add typoscript configuration file
 			$this->addFileToFileArray(
 				$tsFileName = 'typoscript/plugin.' . $this->returnName($extKey, 'class') .'.ts.php',
-				'# <?php die(\'No Access!\');
+				'# <?php die(\'No Access!\'); ?>
 				
 plugin.' . $this->returnName($extKey, 'class') .' {
 	
