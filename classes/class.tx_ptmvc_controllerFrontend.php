@@ -39,6 +39,11 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 	 * @var tslib_cObj	the current cObj will be stored here, when running as a frontend plugin
 	 */
 	public $cObj;
+	
+	/**
+	 * @var t3lib_PageRenderer
+	 */
+	protected $pageRenderer;
 
 	/**
 	 * @var bool	if true the controller merges flexform settings with configuration settings
@@ -54,7 +59,13 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 	 * @since	2009-02-06
 	 */
 	public function __construct() {
+		
+		if (t3lib_div::compat_version('4.3')) {
+			$this->pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
+		}
+		
 		$this->cObj = $GLOBALS['TSFE']->cObj;
+		
 		parent::__construct();
 	}
 

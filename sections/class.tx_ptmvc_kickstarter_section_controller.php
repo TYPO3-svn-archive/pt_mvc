@@ -112,8 +112,20 @@ class tx_ptmvc_kickstarter_section_controller extends tx_kickstarter_sectionbase
 		$viewPathSuffix = 'view/';
 				
 		
-		$this->wizard->ext_localconf[$extKey] = '$GLOBALS[$_EXTKEY.\'_controllerArray\'] = array('."\n";
+		
 		if ($k == 1) {
+			
+			$this->wizard->ext_localconf[$extKey] = '$GLOBALS[$_EXTKEY.\'_controllerArray\'] = array('."\n";
+			foreach ($this->wizard->wizArray[$this->sectionID] as $controllerConf) {
+				$controllerName = $controllerConf['name'];
+				$controllerOptions = array();
+				if ($controllerConf['includeflex']) {
+					$controllerOptions[] = "'includeFlexform' => true";
+				}
+				$this->wizard->ext_localconf[$extKey] .= "\t'_controller_$controllerName' => array(" . implode(', ', $controllerOptions). "),\n";
+			}
+			$this->wizard->ext_localconf[$extKey] .= ');'."\n";
+			
 			
 			// add pt_mvc to the dependencies
 			if (!t3lib_div::inList($this->wizard->wizArray['emconf'][1]['dependencies'], 'pt_mvc')) {
@@ -168,13 +180,11 @@ plugin.' . $this->returnName($extKey, 'class') .'.controller.'.$controllerName. 
 		}
 		
 		
-		$controllerOptions = array();
 		if ($conf['includeflex']) {
-			$controllerOptions[] = "'includeFlexform' => true";
 			
 			$this->addFileToFileArray(
 				$controllerPathSuffix . 'flexform_controller_'.$controllerName.'.xml', 
-				'<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+				'<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <T3DataStructure>
 
 	<meta>
@@ -219,9 +229,6 @@ plugin.' . $this->returnName($extKey, 'class') .'.controller.'.$controllerName. 
 			);
 			
 		}
-		
-		$this->wizard->ext_localconf[$extKey] .= "\t'_controller_$controllerName' => array(" . implode(', ', $controllerOptions). "),\n";
-		
 		
 		$controllerClassName = $controllerClassPrefix . $controllerName;
 		$controllerFileName = $controllerPathSuffix;
@@ -312,7 +319,7 @@ plugin.' . $this->returnName($extKey, 'class') .'.controller.'.$controllerName. 
 		
 		if ($k == 1) {
 		
-			$this->wizard->ext_localconf[$extKey] .= ');
+			$this->wizard->ext_localconf[$extKey] .= '
 			
 		
 $cN = t3lib_extMgm::getCN($_EXTKEY);

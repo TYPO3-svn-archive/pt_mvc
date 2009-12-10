@@ -18,6 +18,8 @@ ToDo: As of 26.10.2009
   
 0.0.3dev:
 --------
++ (fb) ADD: using the pageRendererObject if in TYPO3 4.3
+       ADD: improvements in kickstarter sections
 + (fb) FIX: generated typoscript templates (ts.php) had php syntax errors
 + (fb) ADD: using t3lib_div::_GPmerged instead of t3lib_div::GParrayMerged() (deprecated) if TYPO3 >= 4.3
 + (fb) ADD: Kickstarter support for creating
