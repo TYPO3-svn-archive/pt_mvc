@@ -49,6 +49,11 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 	 * @var bool	if true the controller merges flexform settings with configuration settings
 	 */
 	protected $mergeConfAndFlexform = true;
+	
+	/**
+	 * @var int	current language uid
+	 */
+	protected $languageUid;
 
 
 	/**
@@ -65,6 +70,8 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 		}
 		
 		$this->cObj = $GLOBALS['TSFE']->cObj;
+		
+		$this->languageUid = intval($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']) > 0 ? $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] : 0; // current language uid
 		
 		parent::__construct();
 	}
