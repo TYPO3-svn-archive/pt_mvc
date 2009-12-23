@@ -109,7 +109,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	/**
 	 * @var string	pluginMode. Each pluginMode can have an own default action "<pluginMode>DefaultAction"
 	 */
-	protected $pluginMode = '';
+	protected $pluginMode = NULL;
 
 	/**
 	 * @var array	extension configuration from registry
@@ -268,7 +268,9 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * @since	2008-10-23
 	 */
 	protected function getPluginMode() {
-		$this->pluginMode = $this->conf['pluginMode'];
+		if (is_null($this->pluginMode)) {
+			$this->pluginMode = $this->conf['pluginMode'];
+		}
 	}
 
 

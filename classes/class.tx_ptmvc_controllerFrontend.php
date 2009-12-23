@@ -69,7 +69,7 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 			$this->pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
 		}
 		
-		$this->cObj = $GLOBALS['TSFE']->cObj;
+		$this->cObj = empty($this->cObj) ? $GLOBALS['TSFE']->cObj : $this->cObj;
 		
 		$this->languageUid = intval($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']) > 0 ? $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] : 0; // current language uid
 		
