@@ -18,6 +18,7 @@ ToDo: As of 26.10.2009
   
 0.0.3dev:
 --------
++ (fb) RFT: minor refactoring
 + (fb) ADD: replaced deprecated GParrayMerged by _GPmerged
 + (fb) ADD: tx_ptmvc_controllerFrontend->languageUid will be populated with the current language uid
 + (fb) ADD: using the pageRendererObject if in TYPO3 4.3

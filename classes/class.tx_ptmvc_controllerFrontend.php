@@ -71,7 +71,8 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 		
 		$this->cObj = empty($this->cObj) ? $GLOBALS['TSFE']->cObj : $this->cObj;
 		
-		$this->languageUid = intval($GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid']) > 0 ? $GLOBALS['TSFE']->tmpl->setup['config.']['sys_language_uid'] : 0; // current language uid
+		$languageUid = tx_pttools_div::getTS('config.sys_language_uid');
+		$this->languageUid = intval($languageUid) > 0 ? $languageUid : 0; // current language uid
 		
 		parent::__construct();
 	}
