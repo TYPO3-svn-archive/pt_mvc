@@ -18,6 +18,12 @@ ToDo: As of 26.10.2009
   
 0.0.3dev:
 --------
++ (fb) CHG: Changed the behavior of the exception handling in the tx_ptmvc_controller class. Before the exception message was given back as
+            controller output in any case and the outputException() method (which can be overriden of course) decided what to do additionally while not
+            returning anything. Now the return of the outputException() method is used as controller output. I changed the outputException method to return the
+            exception message by default. That means that if you did not override the outputException() method nothing will change for you. Now you have the
+            possibility to influence what is displayed as controller output when an exception occurs by overriding the outputException() method. Have fun!
+            (This should go into the manual some time... :)
 + (fb) RFT: minor refactoring
 + (fb) ADD: replaced deprecated GParrayMerged by _GPmerged
 + (fb) ADD: tx_ptmvc_controllerFrontend->languageUid will be populated with the current language uid

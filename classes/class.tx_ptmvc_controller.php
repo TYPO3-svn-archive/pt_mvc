@@ -386,9 +386,8 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 			if (method_exists($excObj, 'handle')) {
 				$excObj->handle();
 			}
-			$content .= $excObj->__toString();
-
-			$this->outputException($excObj);
+			
+			$content = $this->outputException($excObj);
 
 			$this->exit_status = self::EXCEPTION_EXIT;
 		}
@@ -404,7 +403,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * while developing
 	 *
 	 * @param Exception $excObj
-	 * @return void
+	 * @return string the output of this method will be displayed as controller output
 	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-10-15
 	 */
@@ -426,6 +425,8 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 				tx_pttools_div::outputToPopup(tx_pttools_debug::exceptionToHTML($excObj));
 			}
 		}
+		
+		return $excObj->__toString();
 	}
 
 
@@ -534,7 +535,8 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 			$result = 'hook_prefixId';
 		} elseif (!empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['pt_mvc']['controller_actions'][$this->getControllerName()][$actionMethodName])) {
 			$result = 'hook';
-		} elseif (method_exists($this, $actionMethodName)) {
+		// } elseif (method_exists($this, $actionMethodName)) {
+		} elseif (is_callable(array($this, $actionMethodName))) {
 			$result = 'class';
 		}
 		return $result;
