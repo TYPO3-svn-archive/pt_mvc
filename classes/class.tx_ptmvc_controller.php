@@ -497,7 +497,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 		}
 
 		$viewObj = new $viewClassName($this);
-		tx_pttools_assert::isInstanceOf($viewObj, 'tx_ptmvc_view', array('message' => 'Object generated from typoscript configuration is not an instance of "tx_ptmvc_view".'));
+		tx_pttools_assert::isInstanceOf($viewObj, 'tx_ptmvc_viewAbstract', array('message' => 'Object generated from typoscript configuration is not an instance of "tx_ptmvc_view".'));
 
 		return $viewObj;
 	}
