@@ -17,7 +17,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'author' => 'Fabrizio Branca',
 	'author_email' => 'mail@fabrizio-branca.de',
 	'shy' => '',
-	'dependencies' => 'pt_tools,smarty',
+	'dependencies' => 'pt_tools',
 	'conflicts' => '',
 	'priority' => '',
 	'module' => '',
@@ -39,6 +39,7 @@ $EM_CONF[$_EXTKEY] = array(
 		),
 		'suggests' => array(
 			'kickstarter' => '0.4.0-',
+			'smarty' => '',
 			'tcaobjects' => '',
 			'If tx_ptmvc_controllerCli is used: PEAR Console_CommandLine (THIS IS JUST A HINT, please ignore if your server is correctly configured)' => '',
 			'If tx_ptmvc_controllerCli is used: PEAR Console_Color (THIS IS JUST A HINT, please ignore if your server is correctly configured)' => '',

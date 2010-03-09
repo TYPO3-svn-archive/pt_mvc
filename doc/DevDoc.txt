@@ -18,6 +18,10 @@ ToDo: As of 26.10.2009
   
 0.0.3dev:
 --------
++ (fb) CHG: I extracted generic view features to tx_ptmvc_viewAbstract and copied smarty specific methods to a new extending class tx_ptmvc_viewSmarty.
+			The former tx_ptmvc_view extends tx_ptmvc_viewSmarty for backwards compatibility reasons but writes messages into the depreaction log.
+			Please Adapt your view to extend tx_ptmvc_viewSmarty if you use smarty views.
+			I'm planning to add some fluid views in the near future.
 + (fb) CHG: Changed the behavior of the exception handling in the tx_ptmvc_controller class. Before the exception message was given back as
             controller output in any case and the outputException() method (which can be overriden of course) decided what to do additionally while not
             returning anything. Now the return of the outputException() method is used as controller output. I changed the outputException method to return the
