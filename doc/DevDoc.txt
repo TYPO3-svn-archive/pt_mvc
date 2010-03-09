@@ -1,6 +1,7 @@
 ********************************************************************************
 DevDoc.txt: Development notes for EXT pt_mvc
-Author: Fabrizio Branca, Rainer Kuhn, et. al.
+Author: Fabrizio Branca
+Patches and contributions: Rainer Kuhn, et. al. 
 
 Legend:
 
@@ -12,12 +13,16 @@ RFT: refactoring / code cleanup
 ********************************************************************************
 
 
-ToDo: As of 26.10.2009
+ToDo: As of 2010-03-09
 ====
 + Support cached controllers
+  Note (Fabrizio): Controllers and views are generic engough to deliver cached content aswell. So it is up to you how you register your controllers in
+  ext_localconf.php and how you link to those controllers (cHash).
+  So this is no "Todo"
   
 0.0.3dev:
 --------
++ (fb) CHG: Raised version to 0.0.4dev
 + (fb) CHG: I extracted generic view features to tx_ptmvc_viewAbstract and copied smarty specific methods to a new extending class tx_ptmvc_viewSmarty.
 			The former tx_ptmvc_view extends tx_ptmvc_viewSmarty for backwards compatibility reasons but writes messages into the depreaction log.
 			Please Adapt your view to extend tx_ptmvc_viewSmarty if you use smarty views.
