@@ -87,6 +87,11 @@ abstract class tx_ptmvc_viewAbstract extends tx_pttools_collection {
 	 * @var bool	if in "noConfigurationMode" the view does not try to read any configuration and does not complain when no configuration is found. All settings will be auto-generated regarding conventions
 	 */
 	protected $runInNoConfigurationMode = false;
+	
+	/**
+	 * @var string template file extension
+	 */
+	protected $templateFileExtension = '.tpl';
 
 
 	/**
@@ -224,7 +229,7 @@ abstract class tx_ptmvc_viewAbstract extends tx_pttools_collection {
 				if (count($nameParts) > 1) {
 					$this->templateFilePath .= implode('/', array_slice($nameParts, 0 ,-1)) . '/';
 				}
-				$this->templateFilePath .= $this->getViewName() . '.tpl';
+				$this->templateFilePath .= $this->getViewName() . $this->templateFileExtension;
 				
 				$this->templateFilePath = t3lib_div::getFileAbsFileName($this->templateFilePath);
 				$pathSource = 'Auto-generated';

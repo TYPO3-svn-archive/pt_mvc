@@ -50,6 +50,11 @@ require_once t3lib_extMgm::extPath('pt_tools').'res/staticlib/class.tx_pttools_d
 abstract class tx_ptmvc_viewFluid extends tx_ptmvc_viewAbstract {
 	
 	/**
+	 * @var string template file extension
+	 */
+	protected $templateFileExtension = '.html';
+	
+	/**
 	 * Constructor checking if the fluid extension is loaded
 	 * 
 	 * @param object|null $controller
@@ -72,7 +77,11 @@ abstract class tx_ptmvc_viewFluid extends tx_ptmvc_viewAbstract {
 	 * @since	2010-03-08
 	 */
 	public function render() {
-		throw new Exception('Not implemented yet!');
+		$renderer = t3lib_div::makeInstance('Tx_Fluid_View_TemplateView');
+		// $renderer->setControllerContext(t3lib_div::makeInstance('Tx_Extbase_MVC_Controller_ControllerContext'));
+		$renderer->setTemplatePathAndFilename($this->templateFilePath);
+		$renderer->assignMultiple($this->itemsArr);
+		return $renderer->render();
 	}
 
 }
