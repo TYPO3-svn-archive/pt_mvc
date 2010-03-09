@@ -1,0 +1,829 @@
+
+EXT: MVC
+Extension Key: pt_mvc
+Language: en
+Keywords: mvc, forDevelopers, forAdvanced
+Copyright 2000-2008, Fabrizio Branca, <mail@fabrizio-branca.de>
+
+This document is published under the Open Content License
+available from http://www.opencontent.org/opl.shtml
+
+The content of this document is related to TYPO3 
+- a GNU/GPL CMS/Framework available from www.typo3.org
+
+Table of Contents
+EXT: MVC	1
+Introduction	3
+What does it do?	3
+Screenshots	3
+Controllers	4
+Available controller classes	4
+How the controller works	4
+Action redirects	5
+How to register a controller as frontend plugin	7
+File structure	9
+How to place multiple controllers on the same page	11
+How controllers are processed	12
+How to implement an action method	14
+Creating a typoscript-only controller	14
+Configuration	14
+Views	16
+Available smarty features	16
+Variables and markers available in the template	17
+How to create links in your smarty templates	18
+Configuration	18
+Models	20
+Known problems	21
+To-Do list	22
+ChangeLog	23
+
+Introduction
+What does it do?
+This extension provides some handy base class for developers to help them to develop their own mvc-based extensions
+Screenshots
+
+Controllers
+Available controller classes
+The pt_mvc offers your some (abstract) base classes, you could extend in your mvc extension. The idea behind this is to write frontend plugins, that are not based on the tslib_pibase class, but on a controller class, that acts like a legacy frontend plugin towards TYPO3.
+pt_mvc offers base classes for the following scenarios, that differ from where the get their configuration and parameters and on how they handle exceptions. Here is a short overview of the available controller types. See chapters below for details.
+class name
+description
+tx_ptmvc_controllerFrontend
+This class is a base class for all controllers used like traditional frontend plugins. It reads its configuration from typoscript and gets its parameters from the post and get parameters. 
+tx_ptmvc_controllerBackend
+No special features implemented here until now. This is only a “raw” controller. Implemente you own “getConfiguration()”, “getParameters()”,... as you need them
+tx_ptmvc_controllerCli
+This controller is intended to be run from command line. In combination with PEAR's Console_CommandLine paket it supports commands and subcommands and retrieves its parameters from command line arguments and options.
+tx_ptmvc_controllerEid
+This controller retrieves its parameters from the post and get parameters (like the controllerFrontend does) regarding its prefixId.
+How the controller works
+The controller is a php class extending from one of  the base controller classes. depending on the intended use of the controller. A controller consists of several (at least one) action methods. These methods are implemented in your inheriting class. The controller decides which action should be called by the action parameter. (This behavior can be changed be overwriting the getAction() method). 
+Your controller class should always be named like this 
+class tx_<condensedExtKey>_controller_<controllerName> extends tx_ptmvc_controller[Frontend|Backend,...] 
+and should located in 
+EXT:<extKey>/controller/class.tx_<condensedExtKey>_controller_<controllerName>.php
+
+Let's have an example: We want to create a movie database. So we have a “movie” controller, that should show a list of all available movies and an single view for a selected movie:
+Example:
+<?php
+require_once t3lib_extMgm::extPath('ptmvc') . 'classes/class.tx_ptmvc_controllerFrontend.php';
+
+class tx_myext_controller_movies extends tx_ptmvc_controllerFrontend {
+
+  protected function defaultAction() {
+    return 'Default action';
+  }
+
+  protected function listViewAction() {
+    return 'List view';
+  }
+
+  protected function singleViewAction() {
+    return 'Single view';
+  }
+}
+?>
+
+By default the prefixId equals the classname (This behavior can be changed be overwriting the getPrefixId() method). If calling the page where the frontend plugin is located (we'll learn how to make a frontend plugin out of a controller later...) you'll get:
+Url: index.php?id=1
+Output: 'Default action'
+If no action parameter is specified, the default action will be called.
+Url: index.php?id=1&tx_myext_controller_movies[action]=listView
+Output: 'List view'
+In this case the parameter action (with the prefixId of the controller, which equals the class name) is “listView” (without “Action”). The controller will look for a “listViewAction” (postfixed with “Action”) method and call this. The output of an actions always is what the controller returns to TYPO3 (and what TYPO3 includes into the webpage in case of a controller acting as a frontend plugin)
+Url: index.php?id=1&tx_myext_controller_movies[action]=singleView
+Output: 'Single view'
+Nothing new here. 
+
+Action redirects
+Now we want to display the listView by default and have an additional parameter for the single view that holds the uid of the movie to be displayed:
+Example:
+<?php
+require_once t3lib_extMgm::extPath('ptmvc') . 'classes/class.tx_ptmvc_controllerFrontend.php';
+
+class tx_myext_controller_movies extends tx_ptmvc_controllerFrontend {
+
+  protected function defaultAction() {
+    // by default we want to display the list view, so we "redirect to the action "listView"
+    return $this->doAction('listView');
+  }
+
+  protected function listViewAction() {
+    return 'List view';
+  }
+
+  protected function singleViewAction() {
+    if (empty($this->params['movie_uid'])) {
+      throw new Exception('No movie uid given!');
+    }
+    return 'Single view for movie ' . $this->params['movie_uid'];
+  }
+}
+?>
+Url: index.php?id=1
+Output: 'List view'
+The defaultAction redirects to the listView action and returns the listView action's output
+Url: index.php?id=1&tx_myext_controller_movies[action]=listView
+Output: 'List view'
+The listView action can still be called directly
+Url: index.php?id=1&tx_myext_controller_movies[action]=singleView
+Output: <Exception>
+As the singleViewAction expects the movie_uid as a parameter we'll get an exception in this case.
+Url: index.php?id=1&tx_myext_controller_movies[action]=singleView&tx_myext_controller_movies[movie_uid]=15
+Output: 'Single view for movie 15'
+We pass the movie_uid (prefixed with the prefixId) and everything is fine.
+doAction()
+Never call actions directly in like this: $this->singleViewAction(); Always use doAction to call another action:
+Parameter
+Type
+Description
+actionName
+string
+This optional parameters is the name of the action that shall be called. If left empty the controller calls the default action (regarding the pluginMode)
+parameter
+array
+This second parameter is also optional. You can specify an array of parameters here that will be passed to the called method.
+Example: 
+class tx_myext_controller_movies extends tx_ptmvc_controllerFrontend {
+
+  protected function defaultAction() {
+    return $this->doAction('singleView', array('movie_uid' => 15));
+  }
+
+  protected function singleViewAction(array $localParams=array()) {
+    return 'Single view for movie ' . $localParams['movie_uid'];
+  }
+}
+
+
+The doAction() ask the actionMethodExists() if the method exists. The action does not necessarily have to exist in the current controller class. By default all controllers support user functions registrered in hooks as controller actions and the controllerFrontend allows to render cObjects as action output.
+This will be performend in the callMethod() method. Overwrite this method if you want to extend the ways actions are performend.
+callMethod()
+The call method executes the method depending on what type actionMethodExists() gave back. The base controller class from which all controllers inherit supports the types “class” and “hook”. The controllerFrontend class adds the type “typoscript”. If you want to add another type overwrite the  actionMethodExists() and the callMethod() methods to support your type.
+Type
+How to use it
+class
+This is the simplest way to realize an action. Simply implement a method called <actionName>Action in your class. The “callMethod()” will call this method if it is available.
+hook(_prefixId)
+Action methods can be overwritten (or new ones added) be implementing a user function and registering it to a hook. This can be done from outside the class or even the extension and is a powerful way to extend functionality from existing controllers without the need to create a new one that inherits from the original one.
+
+If the hook should be applied to all instances of this controller register it in your extensions ext_localconf.php with this line:
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['pt_mvc']['controller_actions']['<controllerName>']['<actionName>Action'] = '<userFunc>';
+
+Example:
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['pt_mvc']['controller_actions']['tx_myext_controller_movies']['createNewAction'] = 'EXT:another_extenions/class.tx_anotherextension_hooks.php:tx_anotherextension_hooks->createNewAction';
+
+If the hook should be applied only for a specifix prefixId use this line:
+$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['pt_mvc']['controller_actions']['<controllerName>']['<prefixId>']['<actionName>Action'] = '<userFunc>';
+
+The userFunction definition should be '[file-reference":"]["&"]class/function["->"method-name]'. (have look at t3lib_div::callUserFunction for details). 
+The userFunctions gets two parameters: 
+an empty parameter array
+a reference to the calling object (the controller object in this case)
+For additional information on hooks and how to use them have a look at the “Hooks” chapter in doc_core_api.
+
+typoscript
+This type is only available in all classes inheriting from tx_ptmvc_controllerFrontend!
+The controllerFrontend class looks if there is a typoscript action first. If a typoscript key in the controller configuration is found, it will be rendered as a cObject:
+
+Example:
+plugin.tx_myext.controller {
+  displayDirectorAction = TEXT
+  displayDirectorAction {
+    value = Hello World
+  }
+}
+
+How to add an action to an existing controller
+TODO: to be written...
+How to register a controller as frontend plugin
+To use a controller as a frontend plugin you have to register it to TYPO3. This is done in your extension's ext_tables.php and ext_localconf.php.
+I would recommend to add following lines to your ext_localconf.php:
+$GLOBALS[$_EXTKEY . '_controllerArray'] = array(
+  '_controller_movies' => array('includeFlexform' => false),
+);
+
+$cN = t3lib_extMgm::getCN($_EXTKEY);
+
+foreach (array_keys($GLOBALS[$_EXTKEY . '_controllerArray']) as $prefix) {
+  $path = t3lib_div::trimExplode('_', $prefix, 1);
+  $path = implode('/', array_slice($path, 0, -1)); // remove class name from the end
+  // Add PlugIn to Static Template #43
+  t3lib_extMgm::addPItoST43($_EXTKEY, $path . '/class.' . $cN . $prefix . '.php', $prefix, 'list_type', 0);
+}
+Register your controllers in the array in the first line. You can add some additional configuration in the key. To add another controller you only have to add an entry in the array.
+Add following linles to your ext_tables.php:
+t3lib_div::loadTCA('tt_content');
+
+foreach ($GLOBALS[$_EXTKEY . '_controllerArray'] as $prefix => $configuration) {
+  
+  $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . $prefix] = 'layout,select_key,pages,recursive';
+  
+  // Adds an entry to the list of plugins in content elements of type "Insert plugin"
+  t3lib_extMgm::addPlugin(
+    array(
+      'LLL:EXT:' . $_EXTKEY . '/locallang_db.xml:tt_content.list_type' . $prefix, 
+      $_EXTKEY . $prefix
+    ), 
+    'list_type'
+  );
+  
+  // Include flexform
+  if ($configuration['includeFlexform']) {
+    $TCA['tt_content']['types']['list']['subtypes_addlist'][$_EXTKEY . $prefix] = 'pi_flexform';
+    t3lib_extMgm::addPiFlexFormValue(
+      $_EXTKEY . $prefix, 
+      'FILE:EXT:' . $_EXTKEY . '/controller/flexform' . $prefix . '.xml'
+    );
+  }
+  
+}
+These two snippets expect following:
+The controller class is called tx_<extKey>_controller_<controllerName>
+The controller class file should be located in EXT:<extKey>/controller/
+Class names are resolved in the pear style. That means if your class name has additional segments between “controller” and you controller name separated by underscores, these segment will be translated to path parts.
+Example: 
+class tx_myext_controller_movies will be searched in 
+EXT:myext/controller/class.tx_myext_controller_movies.php
+
+class tx_myext_controller_movies_dvd will be searched in 
+EXT:myext/controller/movies/class.tx_myext_controller_movies_dvd.php
+In the extension's root directory there is a locallang_db.xml file. This file should contains entries for all controllers
+<label index="tt_content.list_type_controller_<controllerName>">[<extKey>] <controllerName></label>
+If you configured to use a flexform, this has to be located in
+EXT:<extKey>/controller/flexform_controller_<controllerName>.xml
+
+Plugins are inserted as USER_INT cObjects. That means that they are not cached. If you need cached controllers you'll need to adapt the two snippets and maybe some more things within the controller.
+pluginModes
+The controller class suppors so-called “pluginModes”. If you want to have the single view and the list view dvd database in one controller (maybe because they share some other actions) you could define the pluginModes “singleView” and “listView”. By default the controller looks in $this->conf['pluginMode'] for the current pluginMode (overwrite the getPluginMode() method  if you want to change this behavior).
+Usually you would make the pluginMode available in the controller's flexform configuration, to make it possible to switch the pluginMode while putting the plugin on a page.
+ 
+Here is a flexform snippet to embed the pluginMode to your flexform configuration:
+<pluginMode>
+	<TCEforms>
+		<label>Plugin Mode</label>
+		<config>
+			<type>select</type>
+			<items type="array">
+				<numIndex index="1" type="array">
+					<numIndex index="0">List View</numIndex>
+					<numIndex index="1">listView</numIndex>
+				</numIndex>
+				<numIndex index="2" type="array">
+					<numIndex index="0">Single View</numIndex>
+					<numIndex index="1">singleView</numIndex>
+				</numIndex>
+				[...]
+			</items>	
+		</config>
+	</TCEforms>
+</pluginMode>
+
+When the controller is called without an action parameter it first looks if a <pluginMode>DefaultAction() is available. If there is none (even not in hooks or typoscript) it will call the defaultAction(). If all available pluginModes have the <pluginMode>DefaultAction() you don't need to implement a common defaultAction(). The php controller class would look like this:
+<?php
+require_once t3lib_extMgm::extPath('ptmvc') . 'classes/class.tx_ptmvc_controllerFrontend.php';
+
+/**
+ * Movie controller
+ * 
+ * Available pluginModes
+ * - listView: displays the list view
+ * - singleView: displays the single view
+ */
+class tx_myext_controller_movies extends tx_ptmvc_controllerFrontend {
+
+  protected function listViewDefaultAction() {
+    return 'List view';
+  }
+
+  protected function singleViewDefaultAction() {
+    if (empty($this->params['movie_uid'])) {
+      throw new Exception('No movie uid given!');
+    }
+    return 'Single view for movie ' . $this->params['movie_uid'];
+  }
+}
+?>
+
+It is a good practice to have a list of all available pluginModes with a short description in the class comment block. In addition you should group all defaultActions and separate them from other controller methods (action methods).
+File structure
+Use this file/directory structure in your pt_mvc based extension:
+Directory:
+Contains files:
+Description:
+/ (root)
+ext_emconf.php
+ext_localconf.php
+ext_tables.php
+ext_tables.sql
+ext_icon.gif
+TYPO3 expects some extension files in this directory. Don't move them into another directory.
+
+tca_<extKey>.php
+Hint for the “tca.php”. When using a php debugger it is not recommended to have files with the same filename in the same project. It is easyier for the debugger to have unique filenames, so he don't have to ask you which file to take. It is not required that the tca.php file is called tca.php. Call it tca_<extKey>.php and it will be unique again (at least for your your extensions. If you do so don't forget to adapt the configuration in ext_tables.php
+'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'tca_<extKey>.php',
+Btw: Do not turn off the extCache ($GLOBALS['TYPO3_CONF_VARS']['EXT']['extCache']) while debugging! The debugger will ask you for every extension's ext_tables.php and ext_localconf.php. If the extCache is on (which it is by default) the TYPO3 (and the debugger) will only operate on temp_CACHED_<hash>-ext_localconf.php and  temp_CACHED_<hash>-ext_tables.php files.
+
+locallang_db.xml
+locallang.xml
+
+locallang_db.xml should contain all labels used in the backend (Labels for the plugins, for the database tables and fields...)
+
+Store your “domain logic labels” (e.g. those displayed in the frontend output of a controller plugin) in the locallang.xml. The view will automatically look for this file and make all labels available in the smarty templates.
+
+Example:
+{'noItemsFound'|ll} would display the label defined in
+<label index="noItemsFound">No items found</label>
+doc/
+manual.sxw
+(DevDoc.txt)
+TYPO3 expects the manual in this directory.
+It is a good practice to write some development notes (e.g. call them “DevDoc.txt”) for your team. The “doc” folder is a good place to store them. 
+controller/
+class.tx_<condensedExtKey>_controller_<controllerName>.php
+Store you controller classes here. Use the PEAR way to organize them into subfolders. That makes it possible to use autoloaders. 
+
+Example: 
+class tx_myext_controller_movies goes into
+EXT:myext/controller/class.tx_myext_controller_movies.php
+class tx_myext_controller_movies_dvd goes into
+EXT:myext/controller/movies/class.tx_myext_controller_movies_dvd.php
+Controller classes should inherit from one of the tx_ptmvc_controller* classes.
+model/
+class.tx_<condensedExtKey>_<modelName>.php
+Store your model classes here. Use the PEAR way to organize them into subfolders (see “controller/”). If you need accessor classes and collection classes put them here, too.
+
+Example:
+class.tx_myext_movie.php (have a look at the tcaobjects extension for a convenient way to handly model classes)
+class.tx_myext_movieAccessor.php (should be a singleton, see tx_pttools_iSingleton)
+class.tx_myext_movieCollection.php (should inherit from tx_pttools_objectCollection)
+view/
+class.tx_<condensedExtKey>_view_<viewName>.php
+Store your view classes here. Use the PEAR way to organize them into subfolders (see “controller/”).
+View classes should inherit from tx_ptmvc_view. If you need functionality on all your view classes, you could create a tx_<condensedExtKey>_view base class that inherits from pt_mvc's view class and adds your additions.
+
+A view should be called only from one controller. To show to which controller a view belongs to prefix the view name with the controller name it belongs to.
+
+Example:
+View name movies_list means that it is the list view of the movies controller. The classname would be tx_myext_view_movies_list and therefore the class would be located at
+EXT:myext/view/movies/class.tx_myext_view_movies_list.php
+templates/
+<viewName>.tpl
+By default the a view “<viewName>” would look for a template “<viewName>.tpl”. The directory structure – again – is organized the PEAR way. This results in the same directory structure as the “view/” folder.
+
+Example:
+The view “movies_list” would look in EXT:myext/template/movies/movies_list.tpl for a template to use for its output.
+
+Hint:
+Change the extension-wide template base path by setting to the path where your templates are located (organized the PEAR way). With trailing slash.
+plugin.tx_<condensedExtKey>.templateBasePath = 
+typoscript/
+<staticIncludeName>/setup.txt
+<staticIncludeName>/constants.txt
+
+Split your typoscript up into static templates and register them in the ext_tables.php
+
+Example:
+t3lib_extMgm::addStaticFile(
+  $_EXTKEY, 
+  'typoscript/static/<staticIncludeName>/', 
+  '[<extKey>] List configuration'
+);
+
+Prefix the label with your extension key wrapped be braces. This helps you to identify the origin of static templates in the backend later.
+If you have only one static template call it _default.
+Use a separate static template for your preshipped CSS styles. You may put some design specific files (like background images in this folder too). If you want to preship more than one style you could create a folder _themes with subfolders containing the single styles/themes.
+
+*/*.ts
+*/*.ts.css
+The setup.txt should only contain references to other *.ts files. 
+
+Example:
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT/myext/typoscript/_default/plugin.tx_myext.controller.movies.ts">
+
+Always use the most common tyscript path used in the file as filename. Split your files into single files containing larger chunks of typoscript.
+
+Example:
+File  plugin.tx_myext.controller.movies.ts
+Should contain only:
+plugin.tx_myext.controller.movies {
+  [...]
+}
+
+Hint:
+Give the file that conatains your default css styles the ending .ts.css
+This will enable syntax highlighting and code completion in most editors )even if there ist a “plugin.tx_ptlist._CSS_DEFAULT_STYLE (” at the beginnging and a “)” at the end) and TYPO3 doesn't mind the filename:
+plugin.tx_myext._CSS_DEFAULT_STYLE.ts.css
+
+Store your *.ts(.css) files into the folders of the static template where they are referenced.
+res/
+All kinds of resources
+Put all kinds of non-code files (e.g. additional icons,...) here. 
+classes/
+class.tx_<condensedExtKey>_*.php
+
+tests/
+class.tx_<condensedExtKey>_*_testcase.php
+Put your phpunit testcase here. You can use EXT:phpunit to run the tests within the TYPO3 backend.
+libs/
+
+Store third-party code here, if the should be included in this extension. A much better way is to store them in a separate extension (or have a look if there already exists a extension containing this library) and add this extension to the extension's dependencies.
+javascript/
+*.js
+If you need javascript files, store them here.
+eID/
+*.php
+Put your eID scripts here. You should use these files only as a wrapper where to instantiate a controller class (which is then located under controller/) . The pt_mvc extension has a base class for eID controllers: tx_ptmvc_controllerEid.
+
+Using an php autoloader to load classes automatically
+TODO: to be written
+
+How to place multiple controllers on the same page
+If you want to place multiple instances of the same controller plugin on the same page you have to define individual prefixIds for them. The prefixId is somehow the parameters namespace. If two controllers have the same prefixId both will react on the action parameter and additional parameters set with this prefixId. By default (and this is how it was in tslib_pibase) the prefixId equals the controller's classname.
+The simplest way to have different prefixIds for the same controller on the same page without the need of configuring anything is to include the plugin's cObject's uid into the prefixId.
+Example:
+We want to put two instances of the movies controller on one page. One showing the list view. And the other show the single view.
+The prefixId of both controller would be tx_myext_controller_movies and therefore both would execute the “singleViewAction” if the page would be called with index.php?id=2&tx_myext_controller_movies[action]=singleView
+By including the cObject's uid into the prefixId the url would look like this (assuming the cObject's uid of the controller plugin displaying the list is 42 and the cObject's uid of the controller plugin showing the single view is 43)
+index.php?id=2&tx_myext_controller_movies_42[action]=listView&tx_myext_controller_movies_43[action]=singleView&tx_myext_controller_movies_43[movie_uid]=100.
+You controller class would look like this:
+<?php
+
+class tx_myext_controller_movies extends tx_ptmvc_controllerFrontend {
+  
+  [...]
+  
+  protected function getPrefixId() {
+    return parent::getPrefixId() . '_' . $this->cObj->data['uid'];
+  }
+  
+  [...]
+  
+}
+
+?>
+
+Be aware of the fact that the cObj property is only available if the controller is an instance of tx_ptmvc_controllerFrontend used as a frontend plugin.
+How controllers are processed
+When executing a controller several steps are processed. Here is an overview what happens from instantiating the controller object up to the output given back to the calling object, that helps you top understand how everything works:
+Method
+Description
+__construct()
+The constructor is called when the object is constructed. Some basic properties will be set here:
+
+extKey:
+If the extKey property in your inheriting class is not set (which should be default), the extKey is 
+derived from the class name (by looking for an extension key in the extList matching the condensed extension key part in the class name).
+
+prefixId:
+If the prefixId property in your inheriting class is not set (which should be default), the prefixId is set by calling $this->getPrefixId(). By default this method returns the classname as prefixId. You can overwrite this method in your inheriting class for different prefixId. (See “How to place multiple controllers on the same page”). If you need prefixIds influenced by some configuration setting, you can overwrite the $this->prefixId property later as soon as the all needed data is available (after fetching the configuration in the $this->getConfiguration() method).
+
+scriptRelPath:
+If the scriptRelPath property in your inheriting class is not set (which should be default), the scriptRelPath will be retrieved automatically from the class name. As long as you've put the class in the right place under controller/ (using the pear way to organize classes in folders) everything should work fine.
+main($content='', array $conf=array())
+The main method will be executed by TYPO3 when using the controller as a frontend plugin. If using the controller in other contextes (e.g. as a cli script or as a subcontroller) call this method in your wrapping code.
+
+The two parameters of the main method are both optional. TYPO3 passes the current cObject's content to the $content parameter. The content will be stored in the controller's property $this->content, but it is not used in the base classes.
+
+The second parameter is the configuration array. TYPO3 passes the configuration array in this parameter to the controller when using the controller as an USER or USER_INT object (as a frontend plugin...). This configuration will be merged to the existing configuration with highest priority. 
+If a configuration key “prefixId” is set, the controllers prefixId will be replaced by this one.
+prepare()
+
+The prepare action processes several step before the action method is executed to retrieve configuration and parameters. Some of the following methods are empty in the base controller class. If you want to perform some action overwrite them. 
+
+bootstrap()
+The bootstrap method is called before anything else is done.
+
+getConfiguration()
+This methods sets the configuration property $this->emConf, that contains the extension manager configuration for the current extension.
+
+The controllerFrontend class reads the typoscript configuration and writes the extension configuration to $this->extConf and the controller specific configuration to $this->conf. See “configuration” on details how where the configuration is expected.
+
+getParameters()
+The parameter are what comes from the user. In tslib_pibase they were stored to $this->piVars (the frontendControllers stores a reference there for compatibility reasons) in the controller the are stored in $this->params.
+The getParameters() function retrieves the parameters regarding the current context (e.g. in controllerFrontend and controllerEid they are fetched from get and post parameters prefixed with the controller prefixId, in controllerCli the come from the command line arguments and options).
+
+getPluginMode()
+The getPluginMode() method sets the $this->pluginMode property. By default it simply reads the $this->conf['pluginMode'] property.
+
+init()
+This is an empty method that can be overwritten to run some code before any action is called but after everything else is loaded and prepared. 
+
+Example:
+If you would check something in each method (e.g. if a user is logged in) you could move this code into the init method, that will be executed before every action (even before the default actions).
+
+<?php
+
+require_once t3lib_extMgm::extPath('pt_tools').'res/staticlib/class.tx_pttools_assert.php';
+
+class tx_myext_controller_movies extends tx_ptmvc_controllerFrontend {
+  
+  protected function init() {
+    // check if a there is a logged in fe_user
+    tx_pttools_assert::loggedIn();
+  }
+  
+  [...]
+  
+}
+
+?>
+
+doAction()
+getAction()
+By default the getActions() method looks for a “action” key in the  parameters to retrieve the action. Overwrite the getActions() method to change the behavior (e.g. to rename the action parameter.)
+
+The doAction() method decides which action to call by $this->callMethod() after asking $this->actionMethodExists() if the method exists (local, as a hook or in typoscript in the case of a controllerFrontend).
+beforeExit()
+This method will be executed after processing the action.
+outputException()
+If an exception occurs within the execution of the controller the outputException() will be called to output the exception to the user. By default a popup appears with a nice stack trace if the current ip matches the devIpMask or if an admin backend user is logged in (this will be checked with tx_pttools_debug::inDevContext()). 
+
+Hint: Install EXT:cc_debug for nice popup windows and EXT:geshilib for syntax highlighting in the code displayed in the stack trace.
+$this->lastRenderedContent
+The content is always stored in the $this->lastRenderedContent. Use $this->get_lastRenderedContent() to get it. This is needed if you want to access the controllers output from somewhere else (e.g. in a getMarkerArray() method, when using controllers as subcontrollers within other controllers)
+
+Hint: When overwriting a method in your inheriting controller class always call the original method via parent::<methodName>() before or after your code in your inheriting method unless you know exactly what to do...
+How to implement an action method
+Action methods should:
+protected function deleteMovieAction(){
+1. Create/fetch all needed model objects:
+$movie = new tx_myext_movie(intval($this->params['movie_uid']));
+2. Perform some operations on them (by calling their methods). Business logic should be located in the model class and not in the controller class.)
+$movie->delete();
+3. Create a view:
+$view = $this->getView('movies_deleted');
+or: 3. Redirect to another action:
+return $this->doAction('listView');
+4. “Feed” the views with data:
+$view->addItem('The movie has been deleted', 'message');
+
+5. Return the output of the view:
+return $view->render();
+
+}
+Creating a typoscript-only controller
+You can create a controller without writing a php class. Use typoscript actions for simple non dynamic output and hooks (or typoscript actions with USER or USER_INT objects for more complex output.
+Example:
+includeLibs.tx_ptmvc_controllerFrontend = EXT:pt_mvc/classes/class.tx_ptmvc_controllerFrontend.php
+
+lib.movies_controller = USER_INT
+lib.movies_controller {
+  userFunc = tx_ptmvc_controllerFrontend->main
+	
+  prefixId = tx_myext_controller_movies
+	
+  singleViewAction = RECORDS
+  singleViewAction {
+    source.data = GPvar:tx_myext_controller_movies|movie_uid
+    source.intval = 1
+    tables = tx_myext_movies
+      conf.tx_myext_movies = TEXT
+      conf.tx_myext_movies {
+        field = title
+      }
+    }
+
+  listViewAction = CONTENT
+  listViewAction {
+    table = tx_myext_movies
+      select {
+        orderBy = title
+      }
+      renderObj = TEXT
+      renderObj {
+        field = title
+      }
+  }
+
+  defaultAction < .listViewAction
+
+}
+
+Configuration
+The tx_ptmvc_controller class reads only the extension manager configuration and stores it into $this->emConf. The following documentation regarding typoscript and flexform configuration is only available in controllers inheriting from tx_ptmvc_controllerFrontend. 
+Typoscript
+Extension configuration ($this->extConf)
+The extension configuration is read from 
+plugin.tx_<condensedExtKey>.
+and stored into $this->extConf.
+General controller configuration ($this->conf)
+The controller configuration is read from 
+plugin.tx_<condensedExtKey>.controller.<controllerName>.
+and stored into $this->conf.
+PrefixId-specific controller configuration ($this->conf)
+By default the prefixId equals the controller's class name. But if you have different prefixIds for the same controller you can configure the controller based on its prefixId. The prefixId-specific configuration overwrites the general controller configuration. But be careful: If you have stdWrap constructs in the general controller configuration and you merge them with the prefixId specific this will end up in a big mess. So be sure not to use general controller configuration and prefixId-specific configuration at the same time (copy the general controller configuration to the prefixId specific. Unset the general configuration and modify the prefixId specific...)
+plugin.tx_<condensedExtKey>.controller.<controllerName>.<prefixId>.
+Flexforms
+After processing the configuration the flexform (if available) will be merged over the current configuration by overwriting keys with the same name. This is used for the pluginMode, but can be used for everything other configuration parameter, too.
+Local configuration
+The local configuration passed in the main method (which will be filled by TYPO3 when using the controller as a frontend plugin or which you can pass when calling the controller as a subcontroller) will be merged over the existing configuration.
+
+Views
+The pt_mvc extension offers a base class for views. By default the views use smarty to render a template. But you can easily inherit from the tx_ptmvc_view class to realize your own outputs based on other templates or even to output views not to HTML, but to csv, pdfs or even as graphs into image files.
+The TYPO3 extension “smarty” brings the smarty templating engine to TYPO3 and extends its functionality by some handy features like link generation (based on typolinks). Some more functionality comes with the pt_tools function and the tx_ptmvc_view class finally sets some variables for use in the template and replace some markers afterwards.
+The view base class tx_ptmvc_view extends the tx_pttools_collection class. All content you want to be inserted into the template are collection items. 
+Collection items can be
+Item type
+Description
+string
+Simple string to pass to the template
+
+Example:
+$view->addItem('Portishead', 'artistName');
+
+In the template:
+{$artistName}
+object implementing the tx_pttools_iTemplateable interface
+The pt_tools extension provides an interface for objects that can be used in the a template. The tx_pttools_iTemplateable interface forces the class to implement a getMarkerArray() method which should return an array with all information that should be available in a template.
+
+Example:
+class tx_myext_artist implements tx_pttools_iTemplateable {
+   public function getMarkerArray() {
+      return array('name' => 'Portishead');
+   }
+}
+
+$artist = new  tx_myext_artist();
+[…]
+$view->addItem($artist, 'artist');
+
+In the template:
+{$artist.name}
+object implementing the 
+ArrayAccess interface
+If your object implements the ArrayAccess interface you can access all “array” keys in the template directly. (Hint: if you use the tcaobjects extension, you don't need to care about this. All tcaobjects implement the ArrayAccess interface by default)
+
+Example (in the template):
+{$artist.name}
+
+With tcaobject you can even concatenate those keys in the template:
+{$album.artist.name} <!-- the album's artist's name -->
+{$album.songs_objColl.3.title} <!-- the title of the fourth song in the album -->
+Hint: When choosing a name for your view follow this pattern prepend the view name with the name of the controller where this view is used:
+<controllerName>_<viewName>
+
+Available smarty features
+TODO: describe all parameters and move this section to the pt_tools manual
+Some of the smarty modifiers you can use in your templates. Have a look at EXT:pt_tools/res/smarty_plugins and EXT:smarty/typo3_plugins for all available modifiers, blocks, functions, resources and prefilters.
+Modifiers
+modifier
+description
+from EXT:pt_tools
+absfn
+Wrapper for t3lib_div::getFileAbsFileName()
+
+Example:
+{"EXT:myext/myfile.txt"|absfn}
+explodeAndPrint
+Explodes a string and passes the parts to vsprintf
+
+Example:
+{'1982-12-08'|explodeAndPrint:'-':'%3$s.%2$s.%1$s'}
+formatSize
+Wrapper for t3lib_div::formatSize()
+
+Example:
+{"1132456"|formatsize:" | KB| MB| GB"}
+ll
+Fetches a language label from a locallang file. 
+
+Example:
+{'label'|ll}
+{'label'|ll:0} if you don't want to throw an exception if the key is not found
+stdWrap
+Wrapper for cObject's stdWrap
+
+Example:
+{'text'|stdwrap:'lib.element'}
+urlencode
+Wrapper for php's urlencode
+
+Example:
+{'Hello World'|urlencode}
+vsprintf
+Wrapper for php's vsprintf
+
+Example:
+{'The quick brown %s jumps over the lazy %s'|vsprintf:'fox':'dog'}
+wrap
+Wraps the content only if set
+
+Example:
+{'text'|wrap:'<span>|</span>'}
+from EXT:smarty
+
+(see EXT:smarty/doc/manual.sxw)
+
+Variables and markers available in the template
+Variables
+Variable
+Description
+$currentPage
+(only available if in TSFE context) uid of the current page
+$baseUrl
+(only available if in TSFE context) base url configured in typoscript under config.baseUrl
+$feUserUid
+(only available if in TSFE context) uid of the current fe_user
+$prefixId
+prefixId of the calling controller (you need this for link generation)
+$cn
+condensed extension key of the calling controller
+Markers
+Markers will be replaced after processing the template. So do not use them if any smarty functions as this will not work correctly (e.g. if you use ###CURRENTPAGE### and ###PREFIXID### for url generation, extension like realurl or cooluri have no chance to generate the correct typolink as these markers will be replaced after the link generation. Use the equivalent variable for this).
+Marker
+Description
+###CURRENTPAGE###
+(only available if in TSFE context) uid of the current page
+###BASEURL###
+(only available if in TSFE context) base url configured in typoscript under config.baseUrl
+###FEUSERUID###
+(only available if in TSFE context) uid of the current fe_user
+###PREFIXID###
+prefixId of the calling controller (you need this for link generation)
+###CN###
+condensed extension key of the calling controller
+How to create links in your smarty templates
+To create a link within a smarty template use the link or url functionality of the smarty extension:
+Example (with url):
+<a href="{url parameter=$currentPage additionalParams='&%s[action]=reset'|vsprintf:$filter.filterPrefixId setup='lib.tx_ptlist.typolinks.filterResetLink'}" class="resetlink">
+ {"reset"|ll}
+</a>
+Example (with link):
+{link parameter=$currentPage additionalParams='&%s[action]=reset'|vsprintf:$filter.filterPrefixId setup='lib.tx_ptlist.typolinks.filterResetLink'}
+ {"reset"|ll}
+{/link}
+
+Configuration
+Direct configuration
+You can apply following parameters to 
+plugin.tx_<condensedExtKey>.view.<viewName>.
+to configure all instances of the same view.
+Controller specific view configuration
+To configure a view only when it is used within a specific controller use this:
+<controllerConfiguration>.view.<viewName>.
+By default the controller configuration is in plugin.tx_<condensedExtKey>.controller.<controllerName>. which leads to a controller specific view configuration at
+plugin.tx_<condensedExtKey>.controller.<controllerName>.view.<viewName>.
+In combination with prefixId-specific controller combination you can configure views only for chosen controller:
+plugin.tx_<condensedExtKey>.controller.<controllerName>.<prefixId>.view.<viewName>.
+Example:
+If you want to change the template file of the “listAlbums” view that is called in the controller “albums” (and thus has the list name “albums_listAlbums” by convention) and there only in the instance with prefixId tx_myext_controller_albums_45 (assuming you adapted the prefixId be prepeding current cObjects's uid to distinguish multiple controller of the same class on the same page) do this:
+plugin.tx_myext.controller.albums.tx_myext_controller_albums_45.view.albums_listAlbums.template = [...]
+Parameters
+Parameter
+Type
+Description
+template
+string
+Path to the template file to be used instead of the auto-generated path.
+class
+string
+Class reference to a view class that should be instantiated instead of the original class. 
+
+Example: (use another view class for a csv export)
+plugin.tx_ptlist.view.list_itemList {
+    class = EXT:pt_list/view/list/itemList/class.tx_ptlist_view_list_itemList_csv.php:tx_ptlist_view_list_itemList_csv
+}
+markerArrayHooks
+10, 20,... 
+Function references to hooks processing the marker array
+
+Example:
+function addArtistName(array $params, tx_ptmvc_view $viewObj) {
+    $conf = $params['conf']; // this is the configuration in “10., 20., ...”
+    $viewObj->addItem('Portishead', 'artistName');
+}
+outputWrap
+stdWrap
+stdWrap, that will wrap the whole output
+
+Example:
+plugin.tx_ptlist.view.list_itemList.outputWrap.wrap = <div>|</div>
+[individual view specific  configuration]
+
+All configuration parameters are passed to the view object. So if your object needs further configuration simply add it to the view configuration and it will be available within the view.
+
+Kickstarter
+The pt_mvc extension extends the kickstarter extension. Be sure to have version 0.4.0 or newer installed.
+
+You can add controllers and define the actions for each controller. Based on the data you entered there following files will be created:
+
+Controller classes
+Flexform templates, if a controller is configured to use a flexform
+View classes for all actions of all controllers. Assuming that each action has a different view. But it's easier to delete or modify files than to write them from scratch :)
+Smarty templates for every view.
+Typoscript files for the extension and for each controller.
+Static template include all other typoscript files.
+Language labels will be added to the locallang_db.xml file
+Controllers will be registrered in ext_localconf.php and ext_tables.php
+Hint: Try out extension “tcaobject” if you want your model classes generated automatically from the table data you entered before or if you want to edit your tables and fields in a comfortable way using YAML...
+http://forge.typo3.org/projects/show/extension-tcaobjects
+Models
+The pt_mvc extension offers no base classes for your model classes. But have a look at the extension “tcaobjects” for a nice and convenient way to handle model classes. In combination with the pt_mvc view class and tcaobjects' form generating tools (based on pear's HTML_QuickForm) you will be able to create your extensions faster than ever... :)
+Known problems
+see http://forge.typo3.org/projects/extension-pt_mvc/issues
+
+To-Do list
+see http://forge.typo3.org/projects/extension-pt_mvc/issues
+ChangeLog
+see http://forge.typo3.org/projects/extension-pt_mvc/issues

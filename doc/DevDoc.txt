@@ -22,6 +22,7 @@ ToDo: As of 2010-03-09
   
 0.0.3dev:
 --------
++ (fb) ADD: Added manual in txt format
 + (fb) CHG: Raised version to 0.0.4dev
 + (fb) CHG: I extracted generic view features to tx_ptmvc_viewAbstract and copied smarty specific methods to a new extending class tx_ptmvc_viewSmarty.
 			The former tx_ptmvc_view extends tx_ptmvc_viewSmarty for backwards compatibility reasons but writes messages into the depreaction log.
