@@ -65,13 +65,20 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 	 */
 	public function __construct() {
 		
+		tx_pttools_assert::isInstanceOf($GLOBALS['TSFE'], 'tslib_fe', array('message' => 'No TSFE found!'));
+		
 		if (t3lib_div::compat_version('4.3')) {
 			$this->pageRenderer = $GLOBALS['TSFE']->getPageRenderer();
 		}
 		
 		$this->cObj = empty($this->cObj) ? $GLOBALS['TSFE']->cObj : $this->cObj;
-		
+
+		/*
 		$languageUid = tx_pttools_div::getTS('config.sys_language_uid');
+		$languageUid = $GLOBALS['TSFE']->sys_language_uid;
+		*/
+		$languageUid = $GLOBALS['TSFE']->sys_language_content;
+		
 		$this->languageUid = intval($languageUid) > 0 ? $languageUid : 0; // current language uid
 		
 		parent::__construct();
