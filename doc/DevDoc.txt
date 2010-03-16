@@ -22,6 +22,7 @@ ToDo: As of 2010-03-09
   
 0.0.4dev:
 --------
++ (fb) CHG: languageUid is retrieved in a different way. Checking if TSFE is present in controllerFrontend
 + (fb) FIX: Controller checked if view was inheriting tx_ptmvc_view instead of the new tx_ptmvc_viewAbstract
 + (fb) ADD: Added manual in txt format
 + (fb) CHG: Raised version to 0.0.4dev
