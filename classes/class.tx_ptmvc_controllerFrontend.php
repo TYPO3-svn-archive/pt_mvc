@@ -336,6 +336,29 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 		tx_pttools_assert::isNotEmptyString($params['target'], array('message' => 'No "target" key found in params array!'));
 		tx_pttools_div::localRedirect($params['target']);
 	}
+	
+	/**
+	 * Generates a link to an action of the same controller
+	 * 
+	 * @param string $actionName action name (without trailing "Action")
+	 * @param string $parameters (optional) parameters to pass to the action (without any prefix)
+	 * @param string $targetPage (optional) target page, defaults to "same page"
+	 * @return string url
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
+	 * @since	2010-03-24
+	 */
+	public function actionUrl($actionName='', array $parameters=array(), $targetPage='#') {
+		if (!empty($actionName)) {
+			// add action to the parameters
+			$parameters['action'] = $actionName;
+		}
+		
+		$cObj = $GLOBALS['TSFE']->cObj; /* @var $cObj tslib_cObj */
+		return $cObj->typoLink_URL(array(
+			'parameter' => $targetPage,
+			'additionalParams' => t3lib_div::implodeArrayForUrl($this->prefixId, $parameters)
+		));
+	}
 
 }
 
