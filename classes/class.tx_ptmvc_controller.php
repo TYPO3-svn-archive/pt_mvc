@@ -478,28 +478,57 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 			// check global view configuration
 			$viewClassFromConfiguration = $this->_extConf['view.'][$viewName . '.']['class'];
 		}
-
+		
 		if (!empty($viewClassFromConfiguration)) {
-
-			$classParts = explode(':', $viewClassFromConfiguration);
-			$path = implode(':', array_slice($classParts, 0, -1));
-			$viewClassName = end($classParts);
-
-			if (!empty($path)) {
-				$requireFile = t3lib_div::getFileAbsFileName($path);
-				if ($requireFile)	t3lib_div::requireOnce($requireFile);
-			}
+			$viewClassName = $this->loadViewClass($viewClassFromConfiguration);
 		} else {
+			
+			// retrieve class name automatically by convention
 			$viewClassName = t3lib_extMgm::getCN($this->extKey) . '_view_' . $viewName;
+
 			if (!class_exists($viewClassName)) {
-				throw new tx_pttools_exception(sprintf('Class "%s" not found!', $viewClassName));
+				
+				// check if there's a default view class configured
+				$viewClassFromConfiguration = $this->conf['view.']['_default.']['class'];
+				if (empty($viewClassFromConfiguration)) {
+					$viewClassFromConfiguration = $this->_extConf['view.']['_default.']['class'];
+				}
+				
+				if (!empty($viewClassFromConfiguration)) {
+					$viewClassName = $this->loadViewClass($viewClassFromConfiguration);
+				} else {
+					throw new tx_pttools_exception(sprintf('Class "%s" not found (and no default class configured)!', $viewClassName));
+				}
 			}
 		}
 
-		$viewObj = new $viewClassName($this);
+		$viewObj = new $viewClassName($this, $viewName);
 		tx_pttools_assert::isInstanceOf($viewObj, 'tx_ptmvc_viewAbstract', array('message' => 'Object generated from typoscript configuration is not an instance of "tx_ptmvc_view".'));
 
 		return $viewObj;
+	}
+	
+	
+	
+	/**
+	 * Load view class
+	 * 
+	 * @param string $viewClassFromConfiguration
+	 * @return string class name
+	 * @author Fabrizio Branca <mail@fabrizio-branca.de>
+	 * @since 2010-03-29s
+	 */
+	protected function loadViewClass($viewClassFromConfiguration) {
+		$classParts = explode(':', $viewClassFromConfiguration);
+		$path = implode(':', array_slice($classParts, 0, -1));
+		$viewClassName = end($classParts);
+		if (!empty($path)) {
+			$requireFile = t3lib_div::getFileAbsFileName($path);
+			if ($requireFile) {
+				t3lib_div::requireOnce($requireFile);
+			}
+		}
+		return $viewClassName;
 	}
 
 
