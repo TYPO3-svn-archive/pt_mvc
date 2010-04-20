@@ -66,14 +66,15 @@ abstract class tx_ptmvc_viewSmarty extends tx_ptmvc_viewAbstract {
 	 * Constructor checking if the smarty extension is loaded
 	 * 
 	 * @param object|null $controller
+	 * @param	string (optional) viewName
 	 * @author Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since 2010-03-08
 	 */
-	public function __construct($controller = NULL) {
+	public function __construct($controller = NULL, $viewName = NULL) {
 		if (!t3lib_extMgm::isLoaded('smarty')) {
 			throw new tx_pttools_exception('Smarty extensions is needed for smarty views');
 		}
-		parent::__construct($controller);
+		parent::__construct($controller, $viewName);
 	}
 
 	
@@ -94,7 +95,7 @@ abstract class tx_ptmvc_viewSmarty extends tx_ptmvc_viewAbstract {
 		if (!$this->runInNoConfigurationMode) {
         	$this->smarty->assign('conf', t3lib_div::removeDotsFromTS($this->_extConf));
 		}
-
+		
 		// provide some additional variables if in frontend context
 		$presetVariables = array();
         if ($GLOBALS['TSFE'] instanceof tslib_fe) {
@@ -110,6 +111,12 @@ abstract class tx_ptmvc_viewSmarty extends tx_ptmvc_viewAbstract {
 
         // append individual markers before rendering the template here.
         $this->beforeRendering();
+        
+        // add some markers defined by typoscript (if in frontend)
+        if (is_array($this->viewConf['additionalMarkers.']) && ($GLOBALS['TSFE'] instanceof tslib_fe)) {
+        	$additionalMarkers = tx_pttools_div::stdWrapArray($this->viewConf['additionalMarkers.']);
+			$this->smarty->assign($additionalMarkers);
+        }
 
         // generic "marker array hook"
         if (is_array($this->viewConf['markerArrayHooks.'])) {
