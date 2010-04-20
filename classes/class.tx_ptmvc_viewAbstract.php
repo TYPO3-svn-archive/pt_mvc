@@ -93,21 +93,28 @@ abstract class tx_ptmvc_viewAbstract extends tx_pttools_collection {
 	 */
 	protected $templateFileExtension = '.tpl';
 
-
+	
+	
 	/**
 	 * Constructor
 	 *
 	 * @param	object|NULL	(optional) reference to the calling controller
+	 * @param	string (optional) viewName
 	 * @return 	void
 	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-18
 	 */
-	public function __construct($controller = NULL) {
+	public function __construct($controller = NULL, $viewName = NULL) {
 
 		if (empty($this->extKey)) {
 			$this->extKey = tx_ptmvc_div::getExtKeyFromCondensendExtKey(tx_ptmvc_div::getCondensedExtKeyFromClassName(get_class($this)));
 		}
 		tx_pttools_assert::isNotEmptyString($this->extKey, array('message' => 'No extKey set!'));
+		
+		// force viewName to the given value (if empty it will be auto-generated from the classname)
+		if (!is_null($viewName)) {
+			$this->viewName = $viewName;
+		}
 
 		if (!is_null($controller)) {
 			$this->controller = $controller;
@@ -118,6 +125,8 @@ abstract class tx_ptmvc_viewAbstract extends tx_pttools_collection {
 			$this->getConfiguration();
 			tx_pttools_assert::isNotEmptyArray($this->_extConf, array('message' => 'No extension configuration found after executing the getConfiguration method!'));
 		}
+		
+		
 
 		$this->getTemplateFilePath();
 
@@ -237,7 +246,7 @@ abstract class tx_ptmvc_viewAbstract extends tx_pttools_collection {
 		}
 		tx_pttools_assert::isFilePath($this->templateFilePath, array('message' => sprintf('Path "%s" not found or invalid (Source: "%s")!', $this->templateFilePath, $pathSource)));
 
-		if (TYPO3_DLOG) t3lib_div::devLog(sprintf('Using "%s" as template for view "%s" (%s)"', $this->templateFilePath, $this->getViewName(), $pathSource), 'pt_mvc', 0);
+		// if (TYPO3_DLOG) t3lib_div::devLog(sprintf('Using "%s" as template for view "%s" (%s)"', $this->templateFilePath, $this->getViewName(), $pathSource), 'pt_mvc', 0);
 
 	}
 

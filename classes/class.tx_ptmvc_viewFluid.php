@@ -58,14 +58,15 @@ abstract class tx_ptmvc_viewFluid extends tx_ptmvc_viewAbstract {
 	 * Constructor checking if the fluid extension is loaded
 	 * 
 	 * @param object|null $controller
+	 * @param	string (optional) viewName
 	 * @author Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since 2010-03-08
 	 */
-	public function __construct($controller = NULL) {
+	public function __construct($controller = NULL, $viewName = NULL) {
 		if (!t3lib_extMgm::isLoaded('fluid')) {
 			throw new tx_pttools_exception('Fluid extensions is needed for fluid views');
 		}
-		parent::__construct($controller);
+		parent::__construct($controller, $viewName);
 	}
 
 	/**
@@ -77,7 +78,7 @@ abstract class tx_ptmvc_viewFluid extends tx_ptmvc_viewAbstract {
 	 * @since	2010-03-08
 	 */
 	public function render() {
-		$renderer = t3lib_div::makeInstance('Tx_Fluid_View_TemplateView');
+		$renderer = t3lib_div::makeInstance('Tx_Fluid_View_TemplateView'); /* @var $renderer Tx_Fluid_View_TemplateView */
 		// $renderer->setControllerContext(t3lib_div::makeInstance('Tx_Extbase_MVC_Controller_ControllerContext'));
 		$renderer->setTemplatePathAndFilename($this->templateFilePath);
 		$renderer->assignMultiple($this->itemsArr);
