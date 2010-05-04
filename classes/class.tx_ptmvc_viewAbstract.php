@@ -118,6 +118,9 @@ abstract class tx_ptmvc_viewAbstract extends tx_pttools_collection {
 
 		if (!is_null($controller)) {
 			$this->controller = $controller;
+			if (is_object($controller) && $controller->cObj instanceOf tslib_cObj) {
+				$this->addItem($controller->cObj->data, 'cObj');
+			}
 		}
 
 		// Load extension configuration from registry
@@ -126,8 +129,6 @@ abstract class tx_ptmvc_viewAbstract extends tx_pttools_collection {
 			tx_pttools_assert::isNotEmptyArray($this->_extConf, array('message' => 'No extension configuration found after executing the getConfiguration method!'));
 		}
 		
-		
-
 		$this->getTemplateFilePath();
 
 	}
