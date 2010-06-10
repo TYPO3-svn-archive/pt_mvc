@@ -408,25 +408,9 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * @since	2008-10-15
 	 */
 	protected function outputException(Exception $excObj) {
-
-		if (tx_pttools_debug::inDevContext()) {
-
-			// output exception info in popup window
-			if (t3lib_extMgm::isLoaded('cc_debug') && is_object($GLOBALS['errorList'])) {
-				$GLOBALS['errorList']->add(array(
-					'level'		=> E_ERROR,
-					'message'	=> tx_pttools_debug::exceptionToHTML($excObj),
-					'file'		=> $excObj->getFile(),
-					'line'		=> $excObj->getLine(),
-					'variables'	=> array(),
-					'signature'	=> mt_rand(),
-				));
-			} else {
-				tx_pttools_div::outputToPopup(tx_pttools_debug::exceptionToHTML($excObj));
-			}
-		}
 		
 		return $excObj->__toString();
+		
 	}
 
 

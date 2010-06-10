@@ -376,6 +376,48 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 		return $this->cObj->getTypoLink_URL($id, $urlParameters);
 	}
 
+
+	/**
+	 * This method will be called if an exception was catched. It can be used to display debugging information
+	 * while developing
+	 *
+	 * @param Exception $excObj
+	 * @return string the output of this method will be displayed as controller output
+	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
+	 * @since	2008-10-15
+	 */
+	protected function outputException(Exception $excObj) {
+		
+		$exceptionMessage = $excObj->__toString();
+		$inDevContext = tx_pttools_debug::inDevContext(); 
+		
+		$emConf = tx_pttools_div::returnExtConfArray('pt_mvc');
+		
+		if ($emConf['pageUnavailableOnException'] == 'always') { // Always call pageUnavailable
+			$GLOBALS['TSFE']->pageUnavailableAndExit('An exception has occurred: ' . $exceptionMessage);
+		} elseif(!$inDevContext && $emConf['pageUnavailableOnException'] == 'notindevmode') { // Call pageUnavailable only when not in development context
+			$GLOBALS['TSFE']->pageUnavailableAndExit('An exception has occurred: ' . $exceptionMessage);
+		} elseif ($inDevContext) {
+
+			// output exception info in popup window
+			if (t3lib_extMgm::isLoaded('cc_debug') && is_object($GLOBALS['errorList'])) {
+				$GLOBALS['errorList']->add(array(
+					'level'		=> E_ERROR,
+					'message'	=> tx_pttools_debug::exceptionToHTML($excObj),
+					'file'		=> $excObj->getFile(),
+					'line'		=> $excObj->getLine(),
+					'variables'	=> array(),
+					'signature'	=> mt_rand(),
+				));
+			} else {
+				tx_pttools_div::outputToPopup(tx_pttools_debug::exceptionToHTML($excObj));
+			}
+		}
+		
+		header(t3lib_utility_Http::HTTP_STATUS_503);
+		return $exceptionMessage;
+	}
+
 }
 
 
