@@ -389,14 +389,30 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 	protected function outputException(Exception $excObj) {
 		
 		$exceptionMessage = $excObj->__toString();
+		$errorHandlerMessage = 'An exception has occurred: ' . $exceptionMessage;
 		$inDevContext = tx_pttools_debug::inDevContext(); 
 		
 		$emConf = tx_pttools_div::returnExtConfArray('pt_mvc');
 		
+		// Permanent exception will be handled by pageNotFound instead of pageUnavailable
+		// which results in a 404 instead of a 503 http status code
+		// which will prevent bots from retrying to index the page again and again 
+		$permanent = method_exists($excObj, 'isPermanent') && $excObj->isPermanent();
+		
+		$tsfe = $GLOBALS['TSFE']; /* @var $tsfe tslib_fe */ 
+		
 		if ($emConf['pageUnavailableOnException'] == 'always') { // Always call pageUnavailable
-			$GLOBALS['TSFE']->pageUnavailableAndExit('An exception has occurred: ' . $exceptionMessage);
+			if ($permanent) {
+				$tsfe->pageNotFoundAndExit($errorHandlerMessage);
+			} else {
+				$tsfe->pageUnavailableAndExit($errorHandlerMessage);
+			}
 		} elseif(!$inDevContext && $emConf['pageUnavailableOnException'] == 'notindevmode') { // Call pageUnavailable only when not in development context
-			$GLOBALS['TSFE']->pageUnavailableAndExit('An exception has occurred: ' . $exceptionMessage);
+			if ($permanent) {
+				$tsfe->pageNotFoundAndExit($errorHandlerMessage);
+			} else {
+				$tsfe->pageUnavailableAndExit($errorHandlerMessage);
+			}
 		} elseif ($inDevContext) {
 
 			// output exception info in popup window
