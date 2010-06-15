@@ -401,13 +401,10 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 		
 		$tsfe = $GLOBALS['TSFE']; /* @var $tsfe tslib_fe */ 
 		
-		if ($emConf['pageUnavailableOnException'] == 'always') { // Always call pageUnavailable
-			if ($permanent) {
-				$tsfe->pageNotFoundAndExit($errorHandlerMessage);
-			} else {
-				$tsfe->pageUnavailableAndExit($errorHandlerMessage);
-			}
-		} elseif(!$inDevContext && $emConf['pageUnavailableOnException'] == 'notindevmode') { // Call pageUnavailable only when not in development context
+		if (($emConf['pageUnavailableOnException'] == 'always') /* Always call pageUnavailable ... */ 
+			|| (!$inDevContext && $emConf['pageUnavailableOnException'] == 'notindevmode')) { /* ... or call pageUnavailable only when not in development context*/ 	
+
+			ob_clean(); // make sure that there is no content in the output buffer
 			if ($permanent) {
 				$tsfe->pageNotFoundAndExit($errorHandlerMessage);
 			} else {
