@@ -33,13 +33,12 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'pt_tools' => '0.4.2-',
-			'smarty' => '',
 		),
 		'conflicts' => array(
 		),
 		'suggests' => array(
 			'kickstarter' => '0.4.0-',
-			'smarty' => '',
+			'smarty' => '1.2.6-0.0.0',
 			'tcaobjects' => '',
 			'If tx_ptmvc_controllerCli is used: PEAR Console_CommandLine (THIS IS JUST A HINT, please ignore if your server is correctly configured)' => '',
 			'If tx_ptmvc_controllerCli is used: PEAR Console_Color (THIS IS JUST A HINT, please ignore if your server is correctly configured)' => '',
