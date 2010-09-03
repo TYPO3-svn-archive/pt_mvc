@@ -426,8 +426,8 @@ class tx_ptmvc_controllerFrontend extends tx_ptmvc_controller {
 				tx_pttools_div::outputToPopup(tx_pttools_debug::exceptionToHTML($excObj));
 			}
 		}
-		
-		header(t3lib_utility_Http::HTTP_STATUS_503);
+		$status = class_exists('t3lib_utility_Http') ? t3lib_utility_Http::HTTP_STATUS_503 : 'HTTP/1.1 503 Service Unavailable';
+		header($status);
 		return $exceptionMessage;
 	}
 
