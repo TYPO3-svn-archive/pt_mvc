@@ -37,6 +37,7 @@
 require_once t3lib_extMgm::extPath('pt_mvc').'classes/class.tx_ptmvc_div.php';
 require_once t3lib_extMgm::extPath('pt_tools').'res/abstract/class.tx_pttools_iTemplateable.php';
 require_once t3lib_extMgm::extPath('pt_tools').'res/staticlib/class.tx_pttools_div.php';
+require_once t3lib_extMgm::extPath('pt_tools').'res/abstract/class.tx_pttools_collection.php';
 
 /**
  * Base class for views
