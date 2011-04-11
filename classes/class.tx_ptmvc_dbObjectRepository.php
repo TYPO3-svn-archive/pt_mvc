@@ -64,6 +64,39 @@ class tx_ptmvc_dbObjectRepository {
 			$this->dbObj = $GLOBALS['TYPO3_DB'];
 		}
     }
+    
+    /**
+     * This method is called before writing (insert or updated).
+     * Overwrite this method if you need individual functionality
+     * 
+     * @param array $values
+     * @return array
+     */
+    protected function processValuesBeforeSaving(array $values) {
+        return $values;
+    }
+    
+    /**
+     * This method is called before inserting
+     * Overwrite this method if you need individual functionality
+     * 
+     * @param array $values
+     * @return array
+     */
+    protected function processValuesBeforeInserting(array $values) {
+        return $values;
+    }
+    
+    /**
+     * This method is called before updating
+     * Overwrite this method if you need individual functionality
+     * 
+     * @param array $values
+     * @return array
+     */
+    protected function processValuesBeforeUpdating(array $values) {
+        return $values;
+    }
 
 
 	/***************************************************************************
@@ -80,8 +113,8 @@ class tx_ptmvc_dbObjectRepository {
 		tx_pttools_assert::isInstanceOf($object, $this->className);
 
 		$values = $object->getPropertyArray();
-
-		// TODO: allow some preprocessing (timestamps,...)
+		
+		$values = $this->processValuesBeforeSaving($values);
 
 		// unset null fields
 		foreach ($values as $key => $value) {
@@ -94,12 +127,14 @@ class tx_ptmvc_dbObjectRepository {
 
 		if ($uid) {
 			// updating
+		    $values = $this->processValuesBeforeUpdating($values);
 			tx_pttools_assert::isValidUid($uid);
 			$where = 'uid='.intval($uid);
 			$res = $this->dbObj->exec_UPDATEquery($this->tableName, $where, $values);
 			tx_pttools_assert::isMySQLRessource($res, $this->dbObj);
 		} else {
 			// inserting
+			$values = $this->processValuesBeforeInserting($values);
 		    if (empty($values['pid']) && !is_null($this->storagePid)) {
 		        $values['pid'] = tx_pttools_div::getPid($this->storagePid);
 		    }
@@ -226,6 +261,26 @@ class tx_ptmvc_dbObjectRepository {
         } else {
         	return false;
         }
+	}
+	
+	/**
+	 * Quote string
+	 * 
+	 * @param string $string
+	 * @return string quoted string
+	 */
+	public function quote($string) {
+	    return $GLOBALS['TYPO3_DB']->quoteStr($string, $this->tableName);
+	}
+	
+	/**
+	 * Full quote string
+	 * 
+	 * @param string $string
+	 * @return string quoted string
+	 */
+	public function fullQuote($string) {
+	    return $GLOBALS['TYPO3_DB']->fullQuoteStr($string, $this->tableName);
 	}
 
 }
