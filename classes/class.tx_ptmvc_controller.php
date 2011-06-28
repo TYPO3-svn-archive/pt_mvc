@@ -356,7 +356,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * @author	Fabrizio Branca <mail@fabrizio-branca.de>
 	 * @since	2008-06-17
 	 */
-	public function main($content='', array $conf=array())	{
+	public function main($content='', array $conf=array(), $action='')	{
 
 		try {
 
@@ -375,7 +375,8 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 			$this->prepare();
 
 			// process action
-			$content = $this->doAction($this->getAction());
+			$action = !empty($action) ? $action : $this->getAction(); 
+			$content = $this->doAction($action);
 
 			$this->beforeExit();
 
