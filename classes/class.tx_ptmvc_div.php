@@ -51,13 +51,15 @@ class tx_ptmvc_div {
 	 * @since	2008-06-09
 	 */
 	public static function getExtKeyFromCondensendExtKey($condensedExtKey) {
-		
+
 		tx_pttools_assert::isNotEmpty($condensedExtKey);
+
+		$condensedExtKey = strtolower($condensedExtKey);
 
 		if (isset(self::$extKeyLookupTable[$condensedExtKey])) {
 			return self::$extKeyLookupTable[$condensedExtKey];
 		} else {
-			$extKeys = t3lib_div::trimExplode(',', $GLOBALS['TYPO3_CONF_VARS']['EXT']['extList']);
+			$extKeys = t3lib_div::trimExplode(',', strtolower($GLOBALS['TYPO3_CONF_VARS']['EXT']['extList']));
 			foreach ($extKeys as $extKey) {
 				if ($condensedExtKey == str_replace('_', '', $extKey)) {
 					self::$extKeyLookupTable[$condensedExtKey] = $extKey;
@@ -66,10 +68,10 @@ class tx_ptmvc_div {
 			}
 		}
 		throw new tx_pttools_exception(sprintf('Extension key for condensed extension key "%s" not found', $condensedExtKey));
-		
+
 	}
-	
-	
+
+
 
 	/**
 	 * Get condensened extension key from class name
@@ -83,12 +85,12 @@ class tx_ptmvc_div {
 		list ( , $extKey) = t3lib_div::trimExplode('_', $className);
 		return $extKey;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Returns the em configuration of an extension
-	 * 
+	 *
 	 * @param 	string	extension key
 	 * @param 	string	(optional) if a key is set not the whole configuration is returned, but only this key
 	 * @return 	array|mixed	the whole configuration or only a single key
@@ -104,7 +106,7 @@ class tx_ptmvc_div {
 			return $EM_CONF[$_EXTKEY][$key];
 		} else {
 			return $EM_CONF[$_EXTKEY];
-		}	
+		}
 	}
 
 }
