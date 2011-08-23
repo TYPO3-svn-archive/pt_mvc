@@ -44,7 +44,7 @@ abstract class tx_ptmvc_dbObject implements tx_pttools_iSettableByArray, ArrayAc
 	 * @param array parameters
 	 * @return mixed void in case of a setter and
 	 */
-    protected function __call($methodName, $parameters) {
+    public function __call($methodName, $parameters) {
         $methodParts = explode('_', $methodName);
         $prefix = array_shift($methodParts);
 		$property = implode('_', $methodParts);
