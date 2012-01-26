@@ -67,12 +67,12 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
      * @var string prefix Id (equals class name by default)
      */
 	public $prefixId = NULL;
-	
+
 	/**
 	 * @var string script path (will be populated automatically with controller path by convention. See manual)
 	 */
 	public $scriptRelPath = NULL;
-	
+
 	/**
 	 * @var string extension key (will be extracted automatically from the class name)
 	 */
@@ -375,7 +375,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 			$this->prepare();
 
 			// process action
-			$action = !empty($action) ? $action : $this->getAction(); 
+			$action = !empty($action) ? $action : $this->getAction();
 			$content = $this->doAction($action);
 
 			$this->beforeExit();
@@ -387,7 +387,7 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 			if (method_exists($excObj, 'handle')) {
 				$excObj->handle();
 			}
-			
+
 			$content = $this->outputException($excObj);
 
 			$this->exit_status = self::EXCEPTION_EXIT;
@@ -409,9 +409,9 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 	 * @since	2008-10-15
 	 */
 	protected function outputException(Exception $excObj) {
-		
+
 		return $excObj->__toString();
-		
+
 	}
 
 
@@ -463,22 +463,22 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 			// check global view configuration
 			$viewClassFromConfiguration = $this->_extConf['view.'][$viewName . '.']['class'];
 		}
-		
+
 		if (!empty($viewClassFromConfiguration)) {
 			$viewClassName = $this->loadViewClass($viewClassFromConfiguration);
 		} else {
-			
+
 			// retrieve class name automatically by convention
 			$viewClassName = t3lib_extMgm::getCN($this->extKey) . '_view_' . $viewName;
 
 			if (!class_exists($viewClassName)) {
-				
+
 				// check if there's a default view class configured
 				$viewClassFromConfiguration = $this->conf['view.']['_default.']['class'];
 				if (empty($viewClassFromConfiguration)) {
 					$viewClassFromConfiguration = $this->_extConf['view.']['_default.']['class'];
 				}
-				
+
 				if (!empty($viewClassFromConfiguration)) {
 					$viewClassName = $this->loadViewClass($viewClassFromConfiguration);
 				} else {
@@ -490,14 +490,19 @@ abstract class tx_ptmvc_controller extends tslib_pibase {
 		$viewObj = new $viewClassName($this, $viewName);
 		tx_pttools_assert::isInstanceOf($viewObj, 'tx_ptmvc_viewAbstract', array('message' => 'Object generated from typoscript configuration is not an instance of "tx_ptmvc_view".'));
 
+		// add the current content elment uid
+		if ($this->cObj) {
+			$viewObj->addItem($this->cObj->data, 'cObjData', false);
+		}
+
 		return $viewObj;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Load view class
-	 * 
+	 *
 	 * @param string $viewClassFromConfiguration
 	 * @return string class name
 	 * @author Fabrizio Branca <mail@fabrizio-branca.de>
