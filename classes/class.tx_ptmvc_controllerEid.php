@@ -76,7 +76,7 @@ abstract class tx_ptmvc_controllerEid extends tx_ptmvc_controller {
 		if (tx_pttools_debug::inDevContext()) {
 			echo tx_pttools_debug::exceptionToHTML($excObj);	
 		} else {
-			echo $excObj->getMessage();
+			echo htmlspecialchars($excObj->getMessage());
 		}
 	}
 	
